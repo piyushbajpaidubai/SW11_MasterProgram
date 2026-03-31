@@ -175,7 +175,7 @@
       width: 240px; flex-shrink: 0;
       padding: 6px 8px;
       border-right: 1px solid #e8ecf0;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: flex-start; gap: 6px;
     }
     .c-task.hdr-cell {
       border-right-color: #2d3748; font-size: 9px; font-weight: 700;
@@ -257,7 +257,7 @@
     .task-info { flex: 1; min-width: 0; }
     .task-name, .task-sub {
       display: block; outline: none; width: 100%;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      white-space: normal; overflow: visible;
       border-radius: 3px;
     }
     .task-name {
