@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SW11 | LDC Sub-Consultant Monitoring Workflow</title>
+  <title>SW11 | LDC Monitoring Workflow + AOR Authority Approvals</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -387,16 +387,16 @@
 
 <!-- HEADER -->
 <div class="header">
-  <h1>SW11  |  LDC Sub-Consultant Monitoring Workflow  |  Stage 3 DD  |  Stream 2: Project Management</h1>
-  <p>Dubai Creek Harbour – Plot SW11  &nbsp;·&nbsp;  Design Tomorrow FZ-LLC (LDC)  &nbsp;·&nbsp;  LOA 8348  &nbsp;·&nbsp;  All disciplines except Architecture are sub-contracted</p>
+  <h1>SW11  |  LDC Sub-Consultant Monitoring Workflow  +  AOR Authority Approvals  |  Stage 3 DD</h1>
+  <p>Dubai Creek Harbour – Plot SW11  &nbsp;·&nbsp;  Design Tomorrow FZ-LLC (LDC) + Zutari (AOR)  &nbsp;·&nbsp;  LOA 8348  &nbsp;·&nbsp;  AOR Report: DCH-SW11-ZUT-RPT-SD-AOR-400001 Rev.4 (19-Feb-26)</p>
 </div>
 
 <!-- INFO BANNER -->
 <div class="info-banner">
   <div class="ib-icon">📋</div>
   <div class="ib-body">
-    <div class="ib-title">14-Week DD Stage Programme  ·  12 Sub-Consultant Discipline Streams</div>
-    <div class="ib-sub">Captures LDC PM team monitoring &amp; coordination tasks for every sub-contracted discipline across all phases: Brief &amp; Kick-Off → Progress Monitoring → Submission Review → Consolidated Submission</div>
+    <div class="ib-title">16-Week DD Stage Programme  ·  12 Sub-Consultant Streams  ·  AOR Authority Approvals (Zutari)</div>
+    <div class="ib-sub">Stream 1–12: LDC PM monitoring &amp; coordination tasks for all sub-contracted disciplines · AOR Stream: Authority approvals &amp; building permit tracker per DCH-SW11-ZUT-RPT-SD-AOR-400001, Rev.4 (19-Feb-26) · Estimated approval durations from Appendix B Tracker · Full DD submissions planned Wk 14–16 → Building Permit est. 02-Sep-26</div>
   </div>
 </div>
 
@@ -433,7 +433,7 @@
 // ═══════════════════════════════════════════════
 //  CONFIGURATION
 // ═══════════════════════════════════════════════
-let numWeeks = 14;
+let numWeeks = 16;
 let weekStartDate = null;
 let activeFilter = 'all';
 
@@ -450,6 +450,7 @@ const DISC_CONFIG = [
   { id:'su',  label:'SUSTAINABILITY',                            short:'Sustainability', color:'#2d6a4f' },
   { id:'inf', label:'INFRASTRUCTURE & UTILITIES',                short:'Infrastructure', color:'#6b46c1' },
   { id:'qs',  label:'COST MANAGEMENT & QS',                      short:'Cost/QS',        color:'#2d3748' },
+  { id:'aor', label:'ARCHITECT OF RECORD (AOR) – AUTHORITY APPROVALS & BUILDING PERMIT', short:'AOR', color:'#c27303' },
 ];
 
 const DISC_MAP = {};
@@ -780,6 +781,160 @@ let tasks = [
     sub:'Input: Infrastructure SC final DD package; LOA checklist',
     pm:'PM Lead', sc:'Infrastructure SC', wStart:10, wEnd:13, status:'Not Started', color:'#6b46c1' },
 
+  // ── ARCHITECT OF RECORD (AOR) – AUTHORITY APPROVALS ─────────────────────
+  //
+  //  Week mapping: Wk 1 = DD programme start (~Apr 2026, post-SD approval).
+  //  Bar durations are the "Estimated Time (For Approval)" from the Approvals
+  //  Tracker (Appendix B, DCH-SW11-ZUT-RPT-SD-AOR-400001-00, Rev.4, 19-Feb-26).
+  //  Design stages:  General/Pre-Concept/Concept → Wks 1-3
+  //                  Schematic                   → Wks 1-4
+  //                  Full DD                     → Wks 12-16
+  //  Status reflects actual tracker status as at 19-Feb-26.
+  //
+  // PHASE 1 – DATA COLLECTION & INITIAL NOCs
+  { id:101, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D1',
+    name:'EMAAR – Confirm LOA / Owner\u2019s Appointment Letter on file',
+    sub:'Est. approval: 35 days | Design Stage: General | Status: CLOSED 11-Feb-26',
+    pm:'Project Director', sc:'EMAAR', wStart:1, wEnd:5, status:'Complete', color:'#c27303' },
+  { id:102, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D2',
+    name:'DDA – Affection Plan / Site Plan confirmation (CRITICAL DELAY — chase resolution)',
+    sub:'Est. approval: 110 days | Design Stage: General | Planned: 03-Nov-25 | CRITICAL DELAY',
+    pm:'Project Director', sc:'DDA', wStart:1, wEnd:16, status:'Blocked', color:'#e53e3e' },
+  { id:103, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D3',
+    name:'DDA – Site Topography Survey; EMAAR – Site Details/Plot Information RFIs',
+    sub:'Est. approval: 4 days each | Design Stage: Pre-Concept | Both items: Not Yet Due',
+    pm:'PM Lead', sc:'DDA / EMAAR', wStart:1, wEnd:1, status:'Complete', color:'#c27303' },
+
+  // PHASE 2 – PROJECT REGISTRATION (all items CLOSED as at 19-Feb-26)
+  { id:104, disc:'aor', phase:'PHASE 2 – PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R1',
+    name:'All Authorities – Project Registration NOCs (RTA, DEWA, du, DUSUP, EMPOWER, Etisalat, ITS, Parking, PTA, Rail, Roads)',
+    sub:'Est. approval: 10 days each | Design Stage: Pre-Concept | Planned: 09-Feb-26 | ALL CLOSED',
+    pm:'PM Lead + Proj Director', sc:'Multi-authority', wStart:1, wEnd:2, status:'Complete', color:'#c27303' },
+  { id:105, disc:'aor', phase:'PHASE 2 – PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R2',
+    name:'EMAAR – Geotechnical & Geophysical Work Permit',
+    sub:'Est. approval: 15 days | Design Stage: Pre-Concept | Planned: 24-Nov-25 | Not Yet Due',
+    pm:'PM Lead', sc:'EMAAR', wStart:1, wEnd:3, status:'Not Started', color:'#c27303' },
+
+  // PHASE 3 – PHASED PERMITS: CONCEPT STAGE
+  { id:106, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP1',
+    name:'DDA – Preliminary Submission (Concept stage)',
+    sub:'Est. approval: 10 days | Design Stage: Concept | Planned: 10-Jan-26 | Submission: 15-Jan-26 | Due: 25-Jan-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:107, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP2',
+    name:'DDA – Site Preparation Works: Site Office Permit + Hoarding & Sign Board Permit',
+    sub:'Est. approval: 4 days each | Design Stage: Concept | Planned: 09-Feb-26 | Submission: 12-Feb-26 | Due: 16-Feb-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:1, status:'Not Started', color:'#c27303' },
+  { id:108, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP3',
+    name:'DDA – Site Preparation Works: Enabling Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Concept | Planned: 07-Feb-26 | Submission: 12-Feb-26 | Due: 23-Feb-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:109, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP4',
+    name:'DDA – Shoring & Excavation Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:110, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP5',
+    name:'DDA – Piling Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
+    pm:'PM Lead', sc:'DDA', wStart:2, wEnd:3, status:'Not Started', color:'#c27303' },
+
+  // PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE
+  { id:111, disc:'aor', phase:'PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E1',
+    name:'RTA – Traffic Impact Study (TIS) submission and approval',
+    sub:'Est. approval: 45 days | Design Stage: Schematic | Planned: 27-Feb-26 | Submission: 27-Feb-26 | Due: 13-Apr-26',
+    pm:'PM Lead', sc:'RTA', wStart:1, wEnd:6, status:'In Progress', color:'#c27303' },
+  { id:112, disc:'aor', phase:'PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E2',
+    name:'DDA – Design Exceptions / Non-compliance items resolution (natural light, ground floor usage)',
+    sub:'Est. approval: — | Design Stage: Concept | Coordinate design response with Arch team | Not Yet Due',
+    pm:'PM Lead + Proj Arch', sc:'DDA', wStart:1, wEnd:8, status:'Not Started', color:'#c27303' },
+
+  // PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION
+  { id:113, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP1',
+    name:'Compile and QA full DD authority submission package (Architectural, Structural, MEP, FLS, CCTV, Telecom)',
+    sub:'Input: Final packages from all disciplines; QAQC Checklist (signed); AOR mark-up responses resolved',
+    pm:'PM Lead + Proj Director', sc:'Zutari (AOR)', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
+  { id:114, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP2',
+    name:'Coordinate NOC-ready drawings across all disciplines for authority submission (Arch, Structural, MEP, FLS, Façade)',
+    sub:'Input: Architecture drawings; all SC final packages; AOR review sign-off',
+    pm:'PM Lead + BIM Mgr', sc:'All SCs', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
+  { id:115, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP3',
+    name:'DCAA – Dubai Civil Aviation Authority NOC submission and approval',
+    sub:'Est. approval: 11 days | Design Stage: Full DD | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DCAA', wStart:10, wEnd:12, status:'Not Started', color:'#c27303' },
+
+  // PHASE 6 – FULL DD PHASED PERMITS (DDA) — all items planned 25-Jul-26 → submit 30-Jul → due 10-Aug
+  { id:116, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP1',
+    name:'DDA – Architectural Package for Building Permit',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Est. approval: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:117, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP2',
+    name:'DDA – Substructure Permit + Superstructure Permit',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:118, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP3',
+    name:'DDA – Sewerage Plot Connection + Drainage & FIC Location + Storm Water Plot Connection',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:119, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP4',
+    name:'DDA – Mechanical System Permit + Building Waste Management Report',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+
+  // PHASE 7 – EXTERNAL AUTHORITY NOC SUBMISSIONS (Full DD)
+  { id:120, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA1',
+    name:'DEWA-ED – Electrical Load NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:121, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA2',
+    name:'DEWA-ED – Electrical LV/HV NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:122, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA3',
+    name:'DEWA-WD – Water Demand NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:123, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA4',
+    name:'DEWA-WD – Water Supply NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:124, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA5',
+    name:'DCD – Fire Life Safety (FLS) + Pump Room Details NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:125, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA6',
+    name:'DCD – Façade Approval NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead + Proj Arch', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:126, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA7',
+    name:'ETISALAT / du – Telecom NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'ETISALAT / du', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:127, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA8',
+    name:'SIRA – CCTV NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'SIRA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:128, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA9',
+    name:'Empower – Empower NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'Empower', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+
+  // PHASE 8 – FINAL BUILDING PERMIT
+  { id:129, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP1',
+    name:'DDA – Main Building Permit Application submission',
+    sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
+    pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
+  { id:130, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP2',
+    name:'DDA – Plot Allocation / Demarcation',
+    sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
+    pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
+  { id:131, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP3',
+    name:'DDA – Obtaining Permit Approval',
+    sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
+    pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:132, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP4',
+    name:'DDA – Obtaining Building Permit (FINAL)',
+    sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
+    pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
+
   // ── COST MANAGEMENT & QS ─────────────────────────────────────────────────
   { id:69, disc:'qs', phase:'PHASE 1 – BRIEF & KICK-OFF', no:'QS1.1',
     name:'Issue Cost Consultant DD Brief; confirm BOQ format, elemental breakdown, and Pre-Tender Estimate template',
@@ -985,7 +1140,15 @@ function render() {
       <div class="m-title">LDC DD Stage Consolidated Submission — All Disciplines</div>
       <div class="m-sub">All sub-consultant packages received, reviewed &amp; QA-gated · QAQC Checklist signed · Consolidated submission to Emaar</div>
     </div>
-    <div class="m-date">Week 13–14</div>
+    <div class="m-date">Wk 13–14</div>
+  </div>
+  <div class="milestone-row" style="background:linear-gradient(135deg,#7a4f03,#c27303)">
+    <div class="m-icon">🏛</div>
+    <div>
+      <div class="m-title">AOR — Building Permit Obtained from DDA</div>
+      <div class="m-sub">All authority NOCs received · DDA Permit Approval · Full Building Permit issued (Est. 02-Sep-26)</div>
+    </div>
+    <div class="m-date">Wk 15–16</div>
   </div>`;
 
   gantt.innerHTML = html;
