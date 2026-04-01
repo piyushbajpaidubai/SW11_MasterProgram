@@ -246,7 +246,15 @@
     /* ── TASK INFO ── */
     .task-no-text {
       font-size: 9px; font-weight: 800; color: #3182ce;
-      white-space: nowrap;
+      white-space: nowrap; outline: none; border-radius: 3px;
+      cursor: text; min-width: 28px; display: inline-block;
+    }
+    .task-no-text:focus {
+      background: #ebf8ff; padding: 1px 4px;
+      box-shadow: 0 0 0 2px #bee3f8;
+    }
+    .task-no-text:hover:not(:focus) {
+      background: #f0f7ff; border-radius: 3px;
     }
     .task-color-dot {
       width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
@@ -1059,7 +1067,9 @@ function buildTaskRow(task) {
   <div class="g-row" data-id="${task.id}">
     <div class="row-drag-handle" title="Drag to reorder" onmousedown="startRowDrag(event)">⠿</div>
     <div class="c-no">
-      <span class="task-no-text">${escHtml(task.no)}</span>
+      <span class="task-no-text" contenteditable="true"
+          onblur="saveField(${task.id},'no',this.innerText.trim())"
+          onkeydown="blurOnEnter(event)">${escHtml(task.no)}</span>
     </div>
     <div class="c-task">
       <div class="task-color-dot" style="background:${task.color}" onclick="cycleColor(${task.id})" title="Click to change colour"></div>
