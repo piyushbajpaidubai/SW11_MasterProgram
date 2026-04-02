@@ -411,9 +411,61 @@
       .g-row { break-inside: avoid; }
       .g-bar { box-shadow: none !important; }
     }
+  
+    /* ── PASSWORD GATE ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 99999;
+      background: linear-gradient(135deg, #1a365d 0%, #2a4a7f 50%, #1e3a5f 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    #pw-box {
+      background: #fff; border-radius: 16px;
+      padding: 40px 44px 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      text-align: center; width: 340px;
+    }
+    #pw-logo { font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #1a365d; text-transform: uppercase; margin-bottom: 6px; }
+    #pw-title { font-size: 18px; font-weight: 700; color: #1a202c; margin-bottom: 4px; }
+    #pw-sub { font-size: 12px; color: #718096; margin-bottom: 24px; }
+    #pw-input {
+      width: 100%; box-sizing: border-box;
+      padding: 11px 14px; font-size: 15px;
+      border: 2px solid #e2e8f0; border-radius: 8px;
+      outline: none; text-align: center; letter-spacing: 2px;
+      color: #1a202c; transition: border-color 0.15s; margin-bottom: 14px;
+    }
+    #pw-input:focus { border-color: #3182ce; }
+    #pw-input.shake { animation: pw-shake 0.35s ease; border-color: #e53e3e !important; }
+    @keyframes pw-shake {
+      0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-6px); }
+      40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(4px); }
+    }
+    #pw-btn {
+      width: 100%; padding: 11px; font-size: 14px; font-weight: 700;
+      background: #1a365d; color: #fff; border: none; border-radius: 8px;
+      cursor: pointer; letter-spacing: 0.5px; transition: background 0.15s;
+    }
+    #pw-btn:hover { background: #2c5282; }
+    #pw-err { font-size: 12px; color: #e53e3e; margin-top: 10px; min-height: 16px; font-weight: 600; }
+  
   </style>
 </head>
 <body>
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div id="pw-box">
+    <div id="pw-logo">SW11 · LDC Monitoring</div>
+    <div id="pw-title">Password Required</div>
+    <div id="pw-sub">Enter your access password to continue</div>
+    <input id="pw-input" type="password" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')checkPw()"
+      autocomplete="off" spellcheck="false"/>
+    <button id="pw-btn" onclick="checkPw()">Access Programme</button>
+    <div id="pw-err"></div>
+  </div>
+</div>
+
 
 <!-- HEADER -->
 <div class="header">
@@ -460,6 +512,38 @@
 <div class="legend" id="legend"></div>
 
 <script>
+
+// ────────────────────────────────────────
+//  PASSWORD GATE
+// ────────────────────────────────────────
+(function(){
+  function djb2(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    return (h >>> 0).toString(16).padStart(8,'0');
+  }
+  const CORRECT = djb2('DTSW11');
+  function checkPw() {
+    const val = document.getElementById('pw-input').value.trim();
+    const err = document.getElementById('pw-err');
+    const input = document.getElementById('pw-input');
+    if (djb2(val) === CORRECT) {
+      document.getElementById('pw-gate').classList.add('hidden');
+      try { sessionStorage.setItem('sw11_auth','1'); } catch(e){}
+    } else {
+      err.textContent = 'Incorrect password. Please try again.';
+      input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+      input.value = '';
+      setTimeout(() => { input.classList.remove('shake'); err.textContent=''; }, 1500);
+    }
+  }
+  window.checkPw = checkPw;
+  window.addEventListener('DOMContentLoaded', function() {
+    try { if (sessionStorage.getItem('sw11_auth') === '1') { document.getElementById('pw-gate').classList.add('hidden'); return; } } catch(e){}
+    const inp = document.getElementById('pw-input');
+    if (inp) setTimeout(() => inp.focus(), 100);
+  });
+})();
 // ═══════════════════════════════════════════════
 //  CONFIGURATION
 // ═══════════════════════════════════════════════
