@@ -105,7 +105,7 @@
     .gantt-wrap {
       background: white;
       border-radius: 10px;
-      overflow: hidden;
+          overflow-x: clip;
       min-width: fit-content;
     }
 
@@ -118,7 +118,7 @@
       position: relative;
     }
     .g-row:hover .del-btn { opacity: 1; }
-    .g-row.hdr  { background: #1a202c; min-height: 0; }
+    .g-row.hdr  { background: #1a202c; min-height: 0; position: sticky; top: 0; z-index: 10; }
     .g-row.disc-hdr { min-height: 0; }
     .g-row.phase-hdr { min-height: 0; background: #f7fafc; border-top: 1px solid #e2e8f0; }
     .g-row.hidden { display: none; }
