@@ -11,7 +11,7 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f4f6f9;
       color: #2d3748;
-      padding: 20px;h
+      padding: 20px;
     }
 
     /* ── HEADER ── */
@@ -98,14 +98,27 @@
 
     /* ── GANTT OUTER (scrollable) ── */
     .gantt-outer {
-      overflow-x: auto;
       border-radius: 10px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      position: relative;
+    }
+    .gantt-header-outer {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      overflow: hidden;
+      border-radius: 10px 10px 0 0;
+    }
+    .gantt-header-outer .gantt-wrap-hdr {
+      background: #1a202c;
+      min-width: fit-content;
+    }
+    .gantt-scroll {
+      overflow-x: auto;
     }
     .gantt-wrap {
       background: white;
-      border-radius: 10px;
-          overflow-x: clip;
+      border-radius: 0 0 10px 10px;
       min-width: fit-content;
     }
 
@@ -118,7 +131,7 @@
       position: relative;
     }
     .g-row:hover .del-btn { opacity: 1; }
-    .g-row.hdr  { background: #1a202c; min-height: 0; position: sticky; top: 0; z-index: 10; }
+    .g-row.hdr  { background: #1a202c; min-height: 0; }
     .g-row.disc-hdr { min-height: 0; }
     .g-row.phase-hdr { min-height: 0; background: #f7fafc; border-top: 1px solid #e2e8f0; }
     .g-row.hidden { display: none; }
@@ -487,7 +500,10 @@
 
 <!-- GANTT -->
 <div class="gantt-outer">
-  <div class="gantt-wrap" id="gantt"></div>
+  <div class="gantt-header-outer" id="gantt-header"><div class="gantt-wrap-hdr"></div></div>
+  <div class="gantt-scroll" id="gantt-scroll">
+    <div class="gantt-wrap" id="gantt"></div>
+  </div>
 </div>
 
 <div class="tip">
@@ -1100,6 +1116,16 @@ function setFilter(id) { activeFilter = id; render(); }
 // ═══════════════════════════════════════════════
 //  RENDER
 // ═══════════════════════════════════════════════
+function initHeaderScrollSync() {
+  const scrollEl = document.getElementById('gantt-scroll');
+  const headerEl = document.getElementById('gantt-header');
+  if (!scrollEl || !headerEl) return;
+  scrollEl.onscroll = function() {
+    headerEl.scrollLeft = scrollEl.scrollLeft;
+  };
+  headerEl.scrollLeft = scrollEl.scrollLeft;
+}
+
 function buildHeaderRow() {
   let weekCells = '';
   for (let i = 1; i <= numWeeks; i++) {
@@ -1213,8 +1239,10 @@ function buildAddRowBtn(discId) {
 }
 
 function render() {
+  const ganttHdr = document.getElementById('gantt-header').querySelector('.gantt-wrap-hdr');
   const gantt = document.getElementById('gantt');
-  let html = buildHeaderRow();
+  ganttHdr.innerHTML = buildHeaderRow();
+  let html = '';
 
   DISC_CONFIG.forEach(disc => {
     const discTasks = tasks.filter(t => t.disc === disc.id);
@@ -1260,6 +1288,7 @@ function render() {
   </div>`;
 
   gantt.innerHTML = html;
+  initHeaderScrollSync();
   buildFilterTabs();
   renderLegend();
 }
