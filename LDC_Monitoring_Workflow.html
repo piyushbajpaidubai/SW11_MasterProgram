@@ -1524,17 +1524,14 @@ function render() {
     html += buildDiscHeader(disc, discTasks.length);
 
     if (!collapsed[disc.id]) {
-      // Group by phase
-      const phases = [];
+      // Render in task-array order; emit phase header only when phase changes
+      let lastPhase = null;
       discTasks.forEach(t => {
-        if (!phases.includes(t.phase)) phases.push(t.phase);
-      });
-
-      phases.forEach(phase => {
-        html += buildPhaseHeader(phase);
-        discTasks.filter(t => t.phase === phase).forEach(t => {
-          html += buildTaskRow(t);
-        });
+        if (t.phase !== lastPhase) {
+          html += buildPhaseHeader(t.phase);
+          lastPhase = t.phase;
+        }
+        html += buildTaskRow(t);
       });
 
       html += buildAddRowBtn(disc.id);
@@ -1836,6 +1833,12 @@ function savePDF() {
     tasks.forEach(t => { if (!inDom.has(t.id)) reordered.push(t); });
     tasks.length = 0;
     reordered.forEach(t => tasks.push(t));
+    // Update milestone phase to match nearest preceding non-milestone task
+    let currentPhase = null;
+    for (const t of tasks) {
+      if (t.type !== 'milestone') { currentPhase = t.phase; }
+      else if (currentPhase) { t.phase = currentPhase; }
+    }
   }
   function onMove(e) {
     if (!dragSrcRow) return;
