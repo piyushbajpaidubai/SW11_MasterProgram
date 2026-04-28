@@ -95,6 +95,9 @@
     .btn-blue:hover { background: #2c5282; }
     .btn-pdf { background: #e53e3e; color: #fff; }
     .btn-pdf:hover { background: #c53030; }
+    .btn-save { background: #38a169; color: #fff; }
+    .btn-save:hover { background: #276749; }
+    .btn-save.saved { background: #276749; }
 
     /* ── GANTT OUTER (scrollable) ── */
     .gantt-outer {
@@ -399,13 +402,13 @@
     .milestone-symbol-row .c-timeline { overflow: visible !important; }
     .ms-diamond-wrap {
       position: absolute; top: 50%; transform: translateY(-50%);
-      width: 20px; height: 20px; cursor: grab; z-index: 8;
+      width: 12px; height: 12px; cursor: grab; z-index: 8;
     }
     .ms-diamond-wrap:active { cursor: grabbing; }
     .ms-diamond-wrap .ms-d {
-      width: 20px; height: 20px; background: #d97706; transform: rotate(45deg);
-      border: 2px solid #92400e; border-radius: 2px;
-      box-shadow: 0 2px 6px rgba(217,119,6,0.45);
+      width: 12px; height: 12px; background: #d97706; transform: rotate(45deg);
+      border: 1.5px solid #92400e; border-radius: 1px;
+      box-shadow: 0 1px 4px rgba(217,119,6,0.45);
       transition: background 0.12s, transform 0.12s;
     }
     .ms-diamond-wrap:hover .ms-d { background: #b45309; transform: rotate(45deg) scale(1.15); }
@@ -538,6 +541,7 @@
   <button class="btn btn-blue" onclick="addWeekColumn()">＋ Add Week</button>
   <button class="btn btn-success" onclick="addGlobalTask()">＋ Add Task</button>
   <button class="btn btn-pdf" onclick="savePDF()">🖨 Save PDF</button>
+  <button class="btn btn-save" id="saveBtn" onclick="saveState()" title="Save all changes to browser storage">&#128190; Save</button>
 </div>
 
 <!-- GANTT -->
@@ -1394,11 +1398,11 @@ function buildMilestoneTimeline(task) {
   task.markers.forEach((m, i) => {
     const cPct = pct(m.week - 1) + 100 / numWeeks / 2;
     html += '<div class="ms-diamond-wrap" id="msdw-' + task.id + '-' + i + '"' +
-      ' style="left:calc(' + cPct + '% - 10px);"' +
+      ' style="left:calc(' + cPct + '% - 6px);"' +
       ' onmousedown="startMsDrag(event,' + task.id + ',' + i + ')"' +
       ' title="Wk ' + m.week + '">' +
       '<div class="ms-d"></div></div>' +
-      '<div class="ms-label" style="left:calc(' + cPct + '% + 14px);">' + escHtml(m.label||'') + '</div>';
+      '<div class="ms-label" style="left:calc(' + cPct + '% + 9px);">' + escHtml(m.label||'') + '</div>';
   });
   return html;
 }
@@ -1796,7 +1800,7 @@ function savePDF() {
 // ═══════════════════════════════════════════════
 
 // ────────────────────────────────────────
-//  ROW DRAG-TO-REORDER
+//  ROW DRAG-TO-REORDER (syncs tasks[] so Save preserves row order)
 // ────────────────────────────────────────
 (function(){
   let dragSrcRow = null, ghost = null;
@@ -1821,6 +1825,17 @@ function savePDF() {
     g.textContent = (no ? no + ': ' : '') + name.substring(0, 50);
     document.body.appendChild(g);
     return g;
+  }
+  function syncTasksToDOM() {
+    const rows = getTaskRows();
+    const orderedIds = rows.map(r => parseInt(r.getAttribute('data-id'), 10)).filter(n => !isNaN(n));
+    const taskMap = {};
+    tasks.forEach(t => { taskMap[t.id] = t; });
+    const reordered = orderedIds.map(id => taskMap[id]).filter(Boolean);
+    const inDom = new Set(orderedIds);
+    tasks.forEach(t => { if (!inDom.has(t.id)) reordered.push(t); });
+    tasks.length = 0;
+    reordered.forEach(t => tasks.push(t));
   }
   function onMove(e) {
     if (!dragSrcRow) return;
@@ -1849,8 +1864,10 @@ function savePDF() {
     }
     clearDragStates();
     if (ghost) { ghost.remove(); ghost = null; }
-    if (targetRow && targetRow !== dragSrcRow)
+    if (targetRow && targetRow !== dragSrcRow) {
       dragSrcRow.parentNode.insertBefore(dragSrcRow, before ? targetRow : targetRow.nextSibling);
+      syncTasksToDOM();
+    }
     dragSrcRow = null;
     document.removeEventListener('mousemove', onMove);
     document.removeEventListener('mouseup', onUp);
@@ -1867,8 +1884,52 @@ function savePDF() {
   };
 })();
 
+//  SAVE / LOAD (localStorage)
+// ═══════════════════════════════════════════════
+const LS_KEY = 'sw11_tracker_v1';
+
+function saveState() {
+  try {
+    const state = {
+      tasks: tasks,
+      numWeeks: numWeeks,
+      weekStartDate: weekStartDate ? weekStartDate.toISOString() : null,
+      nextId: nextId
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    const btn = document.getElementById('saveBtn');
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '&#10003; Saved!';
+      btn.classList.add('saved');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('saved'); }, 1800);
+    }
+  } catch(e) { alert('Save failed: ' + e.message); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return false;
+    const state = JSON.parse(raw);
+    if (state.tasks && Array.isArray(state.tasks)) {
+      tasks = state.tasks;
+      numWeeks = state.numWeeks || 16;
+      weekStartDate = state.weekStartDate ? new Date(state.weekStartDate) : null;
+      nextId = state.nextId || 200;
+      if (weekStartDate) {
+        const inp = document.getElementById('startDateInput');
+        if (inp) inp.value = weekStartDate.toISOString().substring(0,10);
+      }
+      return true;
+    }
+  } catch(e) { console.warn('loadState failed:', e); }
+  return false;
+}
+
 //  INIT
 // ═══════════════════════════════════════════════
+loadState();
 render();
 </script>
 </body>
