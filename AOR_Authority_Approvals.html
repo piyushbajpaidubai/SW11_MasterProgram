@@ -14,18 +14,24 @@
       padding: 20px;
     }
 
-    /* ── HEADER ── */
+    /* ââ HEADER ââ */
     .header {
       background: #ffffff;
       border-radius: 10px;
-      padding: 16px 28px;
-      text-align: center;
+      padding: 10px 20px;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
     }
     .header h1 { font-size: 18px; font-weight: 700; color: #0f1e35; letter-spacing: 0.5px; }
-    .header p  { font-size: 11px; color: #4a6080; margin-top: 4px; }
+    .header-logos-left { display: flex; align-items: center; gap: 10px; }
+    .header-logo { height: 44px; width: auto; object-fit: contain; }
+    .header-logo-emaar { height: 36px; width: auto; object-fit: contain; }
+    .header-title { text-align: center; flex: 1; }
 
-    /* ── INFO BANNER ── */
+    /* ââ INFO BANNER ââ */
     .info-banner {
       background: linear-gradient(135deg, #1a365d, #2b6cb0);
       border-radius: 8px;
@@ -41,7 +47,7 @@
     .info-banner .ib-title { font-size: 12.5px; font-weight: 700; color: #fff; }
     .info-banner .ib-sub   { font-size: 10px; color: #bee3f8; margin-top: 2px; }
 
-    /* ── CONTROLS ── */
+    /* ââ CONTROLS ââ */
     .controls {
       display: flex;
       align-items: center;
@@ -99,7 +105,7 @@
     .btn-save:hover { background: #276749; }
     .btn-save.saved { background: #276749; }
 
-    /* ── GANTT OUTER (scrollable) ── */
+    /* ââ GANTT OUTER (scrollable) ââ */
     .gantt-outer {
       border-radius: 10px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.09);
@@ -125,7 +131,7 @@
       min-width: fit-content;
     }
 
-    /* ── ROWS ── */
+    /* ââ ROWS ââ */
     .g-row {
       display: flex;
       align-items: stretch;
@@ -139,7 +145,7 @@
     .g-row.phase-hdr { min-height: 0; background: #f7fafc; border-top: 1px solid #e2e8f0; }
     .g-row.hidden { display: none; }
 
-    /* ── DISCIPLINE BANNER ── */
+    /* ââ DISCIPLINE BANNER ââ */
     .disc-banner {
       width: 100%;
       padding: 8px 14px;
@@ -165,7 +171,7 @@
       letter-spacing: 0.3px;
     }
 
-    /* ── PHASE LABEL ── */
+    /* ââ PHASE LABEL ââ */
     .phase-label {
       font-size: 9px;
       font-weight: 700;
@@ -176,7 +182,7 @@
       width: 100%;
     }
 
-    /* ── FIXED COLUMNS ── */
+    /* ââ FIXED COLUMNS ââ */
     .c-no {
       width: 54px; flex-shrink: 0;
       padding: 6px 4px 6px 10px;
@@ -229,7 +235,7 @@
     }
     .c-timeline { flex: 1; position: relative; min-width: 720px; }
 
-    /* ── WEEK HEADERS ── */
+    /* ââ WEEK HEADERS ââ */
     .week-hdrs { display: flex; }
     .week-hdr {
       flex: 1;
@@ -259,7 +265,7 @@
     }
     .week-hdr.add-col:hover { background: #1a2e1a; }
 
-    /* ── TASK INFO ── */
+    /* ââ TASK INFO ââ */
     .task-no-text {
       font-size: 9px; font-weight: 800; color: #3182ce;
       white-space: nowrap; outline: none; border-radius: 3px;
@@ -325,11 +331,11 @@
     }
     .del-btn:hover { color: #e53e3e; }
 
-    /* ── GRID LINES ── */
+    /* ââ GRID LINES ââ */
     .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #f0f4f8; pointer-events: none; z-index: 0; }
     .grid-alt   { position: absolute; top: 0; bottom: 0; background: rgba(0,0,0,0.012); pointer-events: none; z-index: 0; }
 
-    /* ── BAR ── */
+    /* ââ BAR ââ */
     .g-bar {
       position: absolute; top: 50%; transform: translateY(-50%);
       height: 24px; border-radius: 5px;
@@ -344,7 +350,7 @@
     body.is-dragging { cursor: grabbing !important; user-select: none; }
     body.is-dragging * { cursor: grabbing !important; }
 
-    /* — ROW DRAG-TO-REORDER — */
+    /* â ROW DRAG-TO-REORDER â */
     .row-drag-handle {
       display: flex; align-items: center; justify-content: center;
       width: 14px; flex-shrink: 0;
@@ -375,11 +381,11 @@
       position: absolute; top: 0; bottom: 0; width: 9px;
       cursor: ew-resize; z-index: 2; display: flex; align-items: center; justify-content: center;
     }
-    .bar-handle::after { content: '⋮'; font-size: 9px; color: rgba(255,255,255,0.45); }
+    .bar-handle::after { content: 'â®'; font-size: 9px; color: rgba(255,255,255,0.45); }
     .bar-handle.left  { left: 0;  border-radius: 5px 0 0 5px; }
     .bar-handle.right { right: 0; border-radius: 0 5px 5px 0; }
 
-    /* ── ADD ROW ── */
+    /* ââ ADD ROW ââ */
     .add-row-btn {
       display: flex; align-items: center; gap: 5px;
       background: none; border: none; cursor: pointer;
@@ -391,7 +397,7 @@
     .add-row-btn:hover { background: #f7fafc; color: #38a169; }
     .add-row-btn .plus { font-size: 14px; color: #38a169; line-height: 1; }
 
-    /* ── MILESTONE ── */
+    /* ââ MILESTONE ââ */
     /* -- MILESTONE SYMBOL ROW -- */
     .g-row.milestone-symbol-row {
       background: linear-gradient(90deg, #fffbeb 0%, #fefce8 100%);
@@ -447,16 +453,16 @@
       padding: 5px 12px; font-size: 11px; font-weight: 700; color: #c9a84c;
     }
 
-    /* ── LEGEND ── */
+    /* ââ LEGEND ââ */
     .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #718096; }
     .legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-    /* ── TIP ── */
+    /* ââ TIP ââ */
     .tip { font-size: 10px; color: #a0aec0; margin-top: 8px; padding-left: 2px; }
     .tip kbd { background: #e2e8f0; border-radius: 3px; padding: 1px 5px; font-size: 9.5px; color: #4a5568; }
 
-    /* ── PRINT / PDF ── */
+    /* ââ PRINT / PDF ââ */
     @media print {
       @page { size: A2 landscape; margin: 8mm; }
       body { background: white; padding: 4mm; }
@@ -470,7 +476,7 @@
       .g-bar { box-shadow: none !important; }
     }
   
-    /* ── PASSWORD GATE ── */
+    /* ââ PASSWORD GATE ââ */
     #pw-gate {
       position: fixed; inset: 0; z-index: 99999;
       background: linear-gradient(135deg, #1a365d 0%, #2a4a7f 50%, #1e3a5f 100%);
@@ -513,10 +519,10 @@
 <!-- PASSWORD GATE -->
 <div id="pw-gate">
   <div id="pw-box">
-    <div id="pw-logo">SW11 · LDC Monitoring</div>
+    <div id="pw-logo">SW11 Â· LDC Monitoring</div>
     <div id="pw-title">Password Required</div>
     <div id="pw-sub">Enter your access password to continue</div>
-    <input id="pw-input" type="password" placeholder="••••••••"
+    <input id="pw-input" type="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
       onkeydown="if(event.key==='Enter')checkPw()"
       autocomplete="off" spellcheck="false"/>
     <button id="pw-btn" onclick="checkPw()">Access Programme</button>
@@ -527,9 +533,17 @@
 
 <!-- HEADER -->
 <div class="header">
-  <h1>SW11  |  AOR Authority Approvals & Building Permit  |  Stage 3 DD</h1>
-  <p>Dubai Creek Harbour – Plot SW11  &nbsp;·&nbsp;  Design Tomorrow FZ-LLC (LDC) + Zutari (AOR)  &nbsp;·&nbsp;  LOA 8348  &nbsp;·&nbsp;  AOR Report: DCH-SW11-ZUT-RPT-SD-AOR-400001 Rev.4 (19-Feb-26)</p>
-</div>
+      <div class="header-logos-left">
+        <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23000%22%2F%3E%3Ctext%20x%3D%2210%22%20y%3D%2284%22%20font-family%3D%22Arial%22%20font-size%3D%2252%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3ED%3C%2Ftext%3E%3Ctext%20x%3D%2254%22%20y%3D%2246%22%20font-family%3D%22Arial%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E" alt="DT Logo" class="header-logo"/>
+        <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2072%22%3E%3Crect%20width%3D%22240%22%20height%3D%2272%22%20fill%3D%22%231b1b1b%22%2F%3E%3Ctext%20x%3D%2214%22%20y%3D%2234%22%20font-family%3D%22Arial%22%20font-size%3D%2226%22%20font-weight%3D%22800%22%20fill%3D%22%23fff%22%20letter-spacing%3D%221%22%3EZUTARI%3C%2Ftext%3E%3Ctext%20x%3D%2214%22%20y%3D%2256%22%20font-family%3D%22Arial%22%20font-size%3D%2212%22%20font-weight%3D%22400%22%20fill%3D%22%23fff%22%20letter-spacing%3D%221%22%3EIMPACT.%20ENGINEERED.%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Zutari Logo" class="header-logo"/>
+      </div>
+      <div class="header-title">
+        <h1>SW11  |  AOR Authority Approvals &amp; Building Permit  |  Stage 3 DD</h1>
+      </div>
+      <div>
+        <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20260%2064%22%3E%3Crect%20width%3D%22260%22%20height%3D%2264%22%20fill%3D%22%23fff%22%2F%3E%3Ctext%20x%3D%228%22%20y%3D%2252%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2246%22%20font-weight%3D%22300%22%20fill%3D%22%23000%22%3EEMAAR%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Emaar Logo" class="header-logo-emaar"/>
+      </div>
+    </div>
 
 <!-- CONTROLS -->
 <div class="controls">
@@ -538,9 +552,9 @@
     <span class="ctrl-label">Week 1 Start:</span>
     <input type="date" class="ctrl-input" id="startDateInput" onchange="onStartDateChange(this.value)"/>
   </div>
-  <button class="btn btn-blue" onclick="addWeekColumn()">＋ Add Week</button>
-  <button class="btn btn-success" onclick="addGlobalTask()">＋ Add Task</button>
-  <button class="btn btn-pdf" onclick="savePDF()">🖨 Save PDF</button>
+  <button class="btn btn-blue" onclick="addWeekColumn()">ï¼ Add Week</button>
+  <button class="btn btn-success" onclick="addGlobalTask()">ï¼ Add Task</button>
+  <button class="btn btn-pdf" onclick="savePDF()">ð¨ Save PDF</button>
   <button class="btn btn-save" id="saveBtn" onclick="saveState()" title="Save all changes to browser storage">&#128190; Save</button>
 </div>
 
@@ -553,22 +567,22 @@
 </div>
 
 <div class="tip">
-  💡 <kbd>Click</kbd> task name / PM / SC to edit &nbsp;·&nbsp;
-  <kbd>Drag</kbd> bar to move &nbsp;·&nbsp;
-  <kbd>Drag edges</kbd> to resize &nbsp;·&nbsp;
-  <kbd>●</kbd> dot to change colour &nbsp;·&nbsp;
-  <kbd>Status badge</kbd> to cycle status &nbsp;·&nbsp;
-  <kbd>▶ Discipline header</kbd> to collapse/expand &nbsp;·&nbsp;
-  <kbd>＋ Add Week</kbd> to extend timeline
+  ð¡ <kbd>Click</kbd> task name / PM / SC to edit &nbsp;Â·&nbsp;
+  <kbd>Drag</kbd> bar to move &nbsp;Â·&nbsp;
+  <kbd>Drag edges</kbd> to resize &nbsp;Â·&nbsp;
+  <kbd>â</kbd> dot to change colour &nbsp;Â·&nbsp;
+  <kbd>Status badge</kbd> to cycle status &nbsp;Â·&nbsp;
+  <kbd>â¶ Discipline header</kbd> to collapse/expand &nbsp;Â·&nbsp;
+  <kbd>ï¼ Add Week</kbd> to extend timeline
 </div>
 
 <div class="legend" id="legend"></div>
 
 <script>
 
-// ────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââ
 //  PASSWORD GATE
-// ────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââ
 (function(){
   function djb2(str) {
     let h = 5381;
@@ -597,15 +611,15 @@
     if (inp) setTimeout(() => inp.focus(), 100);
   });
 })();
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  CONFIGURATION
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 let numWeeks = 16;
 let weekStartDate = null;
 let activeFilter = 'all';
 
 const DISC_CONFIG = [
-  { id:'aor', label:'ARCHITECT OF RECORD (AOR) – AUTHORITY APPROVALS & BUILDING PERMIT', short:'AOR', color:'#c27303' },
+  { id:'aor', label:'ARCHITECT OF RECORD (AOR) â AUTHORITY APPROVALS & BUILDING PERMIT', short:'AOR', color:'#c27303' },
 ];
 
 const DISC_MAP = {};
@@ -631,168 +645,168 @@ let nextId = 200;
 let drag = null;
 let msDrag = null;
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  TASK DATA  (72 tasks from Excel)
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 let tasks = [
-  // ── ARCHITECT OF RECORD (AOR) – AUTHORITY APPROVALS ─────────────────────
+  // ââ ARCHITECT OF RECORD (AOR) â AUTHORITY APPROVALS âââââââââââââââââââââ
   //
   //  Week mapping: Wk 1 = DD programme start (~Apr 2026, post-SD approval).
   //  Bar durations are the "Estimated Time (For Approval)" from the Approvals
   //  Tracker (Appendix B, DCH-SW11-ZUT-RPT-SD-AOR-400001-00, Rev.4, 19-Feb-26).
-  //  Design stages:  General/Pre-Concept/Concept → Wks 1-3
-  //                  Schematic                   → Wks 1-4
-  //                  Full DD                     → Wks 12-16
+  //  Design stages:  General/Pre-Concept/Concept â Wks 1-3
+  //                  Schematic                   â Wks 1-4
+  //                  Full DD                     â Wks 12-16
   //  Status reflects actual tracker status as at 19-Feb-26.
   //
-  // PHASE 1 – DATA COLLECTION & INITIAL NOCs
-  { id:101, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D1',
-    name:'EMAAR – Confirm LOA / Owner\u2019s Appointment Letter on file',
+  // PHASE 1 â DATA COLLECTION & INITIAL NOCs
+  { id:101, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D1',
+    name:'EMAAR â Confirm LOA / Owner\u2019s Appointment Letter on file',
     sub:'Est. approval: 35 days | Design Stage: General | Status: CLOSED 11-Feb-26',
     pm:'Project Director', sc:'EMAAR', wStart:1, wEnd:5, status:'Complete', color:'#c27303' },
-  { id:102, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D2',
-    name:'DDA – Affection Plan / Site Plan confirmation (CRITICAL DELAY — chase resolution)',
+  { id:102, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D2',
+    name:'DDA â Affection Plan / Site Plan confirmation (CRITICAL DELAY â chase resolution)',
     sub:'Est. approval: 110 days | Design Stage: General | Planned: 03-Nov-25 | CRITICAL DELAY',
     pm:'Project Director', sc:'DDA', wStart:1, wEnd:16, status:'Blocked', color:'#e53e3e' },
-  { id:103, disc:'aor', phase:'PHASE 1 – DATA COLLECTION & INITIAL NOCs', no:'AOR-D3',
-    name:'DDA – Site Topography Survey; EMAAR – Site Details/Plot Information RFIs',
+  { id:103, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D3',
+    name:'DDA â Site Topography Survey; EMAAR â Site Details/Plot Information RFIs',
     sub:'Est. approval: 4 days each | Design Stage: Pre-Concept | Both items: Not Yet Due',
     pm:'PM Lead', sc:'DDA / EMAAR', wStart:1, wEnd:1, status:'Complete', color:'#c27303' },
 
-  // PHASE 2 – PROJECT REGISTRATION (all items CLOSED as at 19-Feb-26)
-  { id:104, disc:'aor', phase:'PHASE 2 – PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R1',
-    name:'All Authorities – Project Registration NOCs (RTA, DEWA, du, DUSUP, EMPOWER, Etisalat, ITS, Parking, PTA, Rail, Roads)',
+  // PHASE 2 â PROJECT REGISTRATION (all items CLOSED as at 19-Feb-26)
+  { id:104, disc:'aor', phase:'PHASE 2 â PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R1',
+    name:'All Authorities â Project Registration NOCs (RTA, DEWA, du, DUSUP, EMPOWER, Etisalat, ITS, Parking, PTA, Rail, Roads)',
     sub:'Est. approval: 10 days each | Design Stage: Pre-Concept | Planned: 09-Feb-26 | ALL CLOSED',
     pm:'PM Lead + Proj Director', sc:'Multi-authority', wStart:1, wEnd:2, status:'Complete', color:'#c27303' },
-  { id:105, disc:'aor', phase:'PHASE 2 – PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R2',
-    name:'EMAAR – Geotechnical & Geophysical Work Permit',
+  { id:105, disc:'aor', phase:'PHASE 2 â PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R2',
+    name:'EMAAR â Geotechnical & Geophysical Work Permit',
     sub:'Est. approval: 15 days | Design Stage: Pre-Concept | Planned: 24-Nov-25 | Not Yet Due',
     pm:'PM Lead', sc:'EMAAR', wStart:1, wEnd:3, status:'Not Started', color:'#c27303' },
 
-  // PHASE 3 – PHASED PERMITS: CONCEPT STAGE
-  { id:106, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP1',
-    name:'DDA – Preliminary Submission (Concept stage)',
+  // PHASE 3 â PHASED PERMITS: CONCEPT STAGE
+  { id:106, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP1',
+    name:'DDA â Preliminary Submission (Concept stage)',
     sub:'Est. approval: 10 days | Design Stage: Concept | Planned: 10-Jan-26 | Submission: 15-Jan-26 | Due: 25-Jan-26',
     pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
-  { id:107, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP2',
-    name:'DDA – Site Preparation Works: Site Office Permit + Hoarding & Sign Board Permit',
+  { id:107, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP2',
+    name:'DDA â Site Preparation Works: Site Office Permit + Hoarding & Sign Board Permit',
     sub:'Est. approval: 4 days each | Design Stage: Concept | Planned: 09-Feb-26 | Submission: 12-Feb-26 | Due: 16-Feb-26',
     pm:'PM Lead', sc:'DDA', wStart:1, wEnd:1, status:'Not Started', color:'#c27303' },
-  { id:108, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP3',
-    name:'DDA – Site Preparation Works: Enabling Works Permit',
+  { id:108, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP3',
+    name:'DDA â Site Preparation Works: Enabling Works Permit',
     sub:'Est. approval: 11 days | Design Stage: Concept | Planned: 07-Feb-26 | Submission: 12-Feb-26 | Due: 23-Feb-26',
     pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
-  { id:109, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP4',
-    name:'DDA – Shoring & Excavation Works Permit',
+  { id:109, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP4',
+    name:'DDA â Shoring & Excavation Works Permit',
     sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
     pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
-  { id:110, disc:'aor', phase:'PHASE 3 – PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP5',
-    name:'DDA – Piling Works Permit',
+  { id:110, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP5',
+    name:'DDA â Piling Works Permit',
     sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
     pm:'PM Lead', sc:'DDA', wStart:2, wEnd:3, status:'Not Started', color:'#c27303' },
 
-  // PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE
-  { id:111, disc:'aor', phase:'PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E1',
-    name:'RTA – Traffic Impact Study (TIS) submission and approval',
+  // PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE
+  { id:111, disc:'aor', phase:'PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E1',
+    name:'RTA â Traffic Impact Study (TIS) submission and approval',
     sub:'Est. approval: 45 days | Design Stage: Schematic | Planned: 27-Feb-26 | Submission: 27-Feb-26 | Due: 13-Apr-26',
     pm:'PM Lead', sc:'RTA', wStart:1, wEnd:6, status:'In Progress', color:'#c27303' },
-  { id:112, disc:'aor', phase:'PHASE 4 – EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E2',
-    name:'DDA – Design Exceptions / Non-compliance items resolution (natural light, ground floor usage)',
-    sub:'Est. approval: — | Design Stage: Concept | Coordinate design response with Arch team | Not Yet Due',
+  { id:112, disc:'aor', phase:'PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E2',
+    name:'DDA â Design Exceptions / Non-compliance items resolution (natural light, ground floor usage)',
+    sub:'Est. approval: â | Design Stage: Concept | Coordinate design response with Arch team | Not Yet Due',
     pm:'PM Lead + Proj Arch', sc:'DDA', wStart:1, wEnd:8, status:'Not Started', color:'#c27303' },
 
-  // PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION
-  { id:113, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP1',
+  // PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION
+  { id:113, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP1',
     name:'Compile and QA full DD authority submission package (Architectural, Structural, MEP, FLS, CCTV, Telecom)',
     sub:'Input: Final packages from all disciplines; QAQC Checklist (signed); AOR mark-up responses resolved',
     pm:'PM Lead + Proj Director', sc:'Zutari (AOR)', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
-  { id:114, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP2',
-    name:'Coordinate NOC-ready drawings across all disciplines for authority submission (Arch, Structural, MEP, FLS, Façade)',
+  { id:114, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP2',
+    name:'Coordinate NOC-ready drawings across all disciplines for authority submission (Arch, Structural, MEP, FLS, FaÃ§ade)',
     sub:'Input: Architecture drawings; all SC final packages; AOR review sign-off',
     pm:'PM Lead + BIM Mgr', sc:'All SCs', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
-  { id:115, disc:'aor', phase:'PHASE 5 – FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8–12)', no:'AOR-FP3',
-    name:'DCAA – Dubai Civil Aviation Authority NOC submission and approval',
+  { id:115, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP3',
+    name:'DCAA â Dubai Civil Aviation Authority NOC submission and approval',
     sub:'Est. approval: 11 days | Design Stage: Full DD | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DCAA', wStart:10, wEnd:12, status:'Not Started', color:'#c27303' },
 
-  // PHASE 6 – FULL DD PHASED PERMITS (DDA) — all items planned 25-Jul-26 → submit 30-Jul → due 10-Aug
-  { id:116, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP1',
-    name:'DDA – Architectural Package for Building Permit',
+  // PHASE 6 â FULL DD PHASED PERMITS (DDA) â all items planned 25-Jul-26 â submit 30-Jul â due 10-Aug
+  { id:116, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP1',
+    name:'DDA â Architectural Package for Building Permit',
     sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Est. approval: 10-Aug-26',
     pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:117, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP2',
-    name:'DDA – Substructure Permit + Superstructure Permit',
+  { id:117, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP2',
+    name:'DDA â Substructure Permit + Superstructure Permit',
     sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:118, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP3',
-    name:'DDA – Sewerage Plot Connection + Drainage & FIC Location + Storm Water Plot Connection',
+  { id:118, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP3',
+    name:'DDA â Sewerage Plot Connection + Drainage & FIC Location + Storm Water Plot Connection',
     sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:119, disc:'aor', phase:'PHASE 6 – FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP4',
-    name:'DDA – Mechanical System Permit + Building Waste Management Report',
+  { id:119, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP4',
+    name:'DDA â Mechanical System Permit + Building Waste Management Report',
     sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
 
-  // PHASE 7 – EXTERNAL AUTHORITY NOC SUBMISSIONS (Full DD)
-  { id:120, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA1',
-    name:'DEWA-ED – Electrical Load NOC',
+  // PHASE 7 â EXTERNAL AUTHORITY NOC SUBMISSIONS (Full DD)
+  { id:120, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA1',
+    name:'DEWA-ED â Electrical Load NOC',
     sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:121, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA2',
-    name:'DEWA-ED – Electrical LV/HV NOC',
+  { id:121, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA2',
+    name:'DEWA-ED â Electrical LV/HV NOC',
     sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
     pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:122, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA3',
-    name:'DEWA-WD – Water Demand NOC',
+  { id:122, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA3',
+    name:'DEWA-WD â Water Demand NOC',
     sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:123, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA4',
-    name:'DEWA-WD – Water Supply NOC',
+  { id:123, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA4',
+    name:'DEWA-WD â Water Supply NOC',
     sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
     pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:124, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA5',
-    name:'DCD – Fire Life Safety (FLS) + Pump Room Details NOC',
+  { id:124, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA5',
+    name:'DCD â Fire Life Safety (FLS) + Pump Room Details NOC',
     sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
     pm:'PM Lead', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:125, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA6',
-    name:'DCD – Façade Approval NOC',
+  { id:125, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA6',
+    name:'DCD â FaÃ§ade Approval NOC',
     sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
     pm:'PM Lead + Proj Arch', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:126, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA7',
-    name:'ETISALAT / du – Telecom NOC',
+  { id:126, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA7',
+    name:'ETISALAT / du â Telecom NOC',
     sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
     pm:'PM Lead', sc:'ETISALAT / du', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:127, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA8',
-    name:'SIRA – CCTV NOC',
+  { id:127, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA8',
+    name:'SIRA â CCTV NOC',
     sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'SIRA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
-  { id:128, disc:'aor', phase:'PHASE 7 – EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA9',
-    name:'Empower – Empower NOC',
+  { id:128, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA9',
+    name:'Empower â Empower NOC',
     sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
     pm:'PM Lead', sc:'Empower', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
 
-  // PHASE 8 – FINAL BUILDING PERMIT
-  { id:129, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP1',
-    name:'DDA – Main Building Permit Application submission',
+  // PHASE 8 â FINAL BUILDING PERMIT
+  { id:129, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP1',
+    name:'DDA â Main Building Permit Application submission',
     sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
     pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
-  { id:130, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP2',
-    name:'DDA – Plot Allocation / Demarcation',
+  { id:130, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP2',
+    name:'DDA â Plot Allocation / Demarcation',
     sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
     pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
-  { id:131, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP3',
-    name:'DDA – Obtaining Permit Approval',
+  { id:131, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP3',
+    name:'DDA â Obtaining Permit Approval',
     sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
     pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
-  { id:132, disc:'aor', phase:'PHASE 8 – FINAL BUILDING PERMIT', no:'AOR-BP4',
-    name:'DDA – Obtaining Building Permit (FINAL)',
+  { id:132, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP4',
+    name:'DDA â Obtaining Building Permit (FINAL)',
     sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
     pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
 ];
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  HELPERS
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function escHtml(s) {
   return String(s||'')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -812,9 +826,9 @@ function statusStyle(s) {
   return `background:${st.bg};color:${st.color};`;
 }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  FILTER TABS
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function buildFilterTabs() {
   const tabs = document.getElementById('filterTabs');
   let html = `<button class="filter-tab${activeFilter==='all'?' active':''}" onclick="setFilter('all')">All Disciplines</button>`;
@@ -828,9 +842,9 @@ function buildFilterTabs() {
 }
 function setFilter(id) { activeFilter = id; render(); }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  RENDER
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function initHeaderScrollSync() {
   const scrollEl = document.getElementById('gantt-scroll');
   const headerEl = document.getElementById('gantt-header');
@@ -847,7 +861,7 @@ function buildHeaderRow() {
     const lbl = weekLabel(i);
     weekCells += `<div class="week-hdr"><span class="wn">Wk ${i}</span>${lbl?`<span class="wd">${lbl}</span>`:''}</div>`;
   }
-  weekCells += `<div class="week-hdr add-col" title="Add week column" onclick="addWeekColumn()">＋</div>`;
+  weekCells += `<div class="week-hdr add-col" title="Add week column" onclick="addWeekColumn()">ï¼</div>`;
   return `
   <div class="g-row hdr">
     <div class="c-no hdr-cell">No.</div>
@@ -986,7 +1000,7 @@ function buildDiscHeader(disc, taskCount) {
   <div class="g-row disc-hdr" data-disc="${disc.id}">
     <div class="disc-banner${isCollapsed?' collapsed':''}" style="background:${disc.color}"
       onclick="toggleDisc('${disc.id}')">
-      <span class="disc-arrow">▼</span>
+      <span class="disc-arrow">â¼</span>
       ${escHtml(disc.label)}
       <span class="disc-count">${taskCount} tasks</span>
     </div>
@@ -994,7 +1008,7 @@ function buildDiscHeader(disc, taskCount) {
 }
 
 function buildPhaseHeader(label) {
-  return `<div class="g-row phase-hdr"><span class="phase-label">▸ ${escHtml(label)}</span></div>`;
+  return `<div class="g-row phase-hdr"><span class="phase-label">â¸ ${escHtml(label)}</span></div>`;
 }
 
 function buildAddRowBtn(discId) {
@@ -1036,20 +1050,20 @@ function render() {
   // Milestone footer
   html += `
   <div class="milestone-row">
-    <div class="m-icon">🏆</div>
+    <div class="m-icon">ð</div>
     <div>
-      <div class="m-title">LDC DD Stage Consolidated Submission — All Disciplines</div>
-      <div class="m-sub">All sub-consultant packages received, reviewed &amp; QA-gated · QAQC Checklist signed · Consolidated submission to Emaar</div>
+      <div class="m-title">LDC DD Stage Consolidated Submission â All Disciplines</div>
+      <div class="m-sub">All sub-consultant packages received, reviewed &amp; QA-gated Â· QAQC Checklist signed Â· Consolidated submission to Emaar</div>
     </div>
-    <div class="m-date">Wk 13–14</div>
+    <div class="m-date">Wk 13â14</div>
   </div>
   <div class="milestone-row" style="background:linear-gradient(135deg,#7a4f03,#c27303)">
-    <div class="m-icon">🏛</div>
+    <div class="m-icon">ð</div>
     <div>
-      <div class="m-title">AOR — Building Permit Obtained from DDA</div>
-      <div class="m-sub">All authority NOCs received · DDA Permit Approval · Full Building Permit issued (Est. 02-Sep-26)</div>
+      <div class="m-title">AOR â Building Permit Obtained from DDA</div>
+      <div class="m-sub">All authority NOCs received Â· DDA Permit Approval Â· Full Building Permit issued (Est. 02-Sep-26)</div>
     </div>
-    <div class="m-date">Wk 15–16</div>
+    <div class="m-date">Wk 15â16</div>
   </div>`;
 
   gantt.innerHTML = html;
@@ -1074,9 +1088,9 @@ function renderLegend() {
     </div>`;
 }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  DRAG & RESIZE
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function startDrag(e, taskId, type) {
   e.preventDefault();
   e.stopPropagation();
@@ -1127,7 +1141,7 @@ document.addEventListener('mousemove', e => {
   const widthPct = pct(ne - ns + 1);
   barEl.style.left  = `calc(${leftPct}% + 3px)`;
   barEl.style.width = `calc(${widthPct}% - 6px)`;
-  barEl.title = `Wk ${ns}–${ne}`;
+  barEl.title = `Wk ${ns}â${ne}`;
 });
 
 document.addEventListener('mouseup', () => {
@@ -1174,9 +1188,9 @@ document.addEventListener('mouseup', function() {
   document.body.classList.remove('is-dragging');
 });
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  TASK ACTIONS
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function deleteTask(id) {
   if (!confirm('Delete this task?')) return;
   tasks = tasks.filter(t => t.id !== id);
@@ -1191,8 +1205,8 @@ function addTaskToDisc(discId) {
   const id = nextId++;
   tasks.push({ id, disc: discId, type: 'task', phase: lastPhase,
     no: discId.toUpperCase() + '-' + id,
-    name: 'New Task – click to edit', sub: 'Input: click to edit',
-    pm: 'PM Lead', sc: '–', wStart: 1, wEnd: 2,
+    name: 'New Task â click to edit', sub: 'Input: click to edit',
+    pm: 'PM Lead', sc: 'â', wStart: 1, wEnd: 2,
     status: 'Not Started', color: disc.color });
   saveState();
   render();
@@ -1209,7 +1223,7 @@ function addMilestoneToDisc(discId) {
   const id = nextId++;
   tasks.push({ id, disc: discId, type: 'milestone', phase: lastPhase,
     no: 'MS-' + id,
-    name: 'Milestone – click to edit', sub: 'Description – click to edit',
+    name: 'Milestone â click to edit', sub: 'Description â click to edit',
     pm: '', sc: '', wStart: 1, wEnd: 1, status: 'Not Started', color: '#d97706',
     markers: [{ week: 1, label: 'MS-' + id }] });
   saveState();
@@ -1275,9 +1289,9 @@ function saveField(id, field, value) {
   saveState();
 }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  WEEK COLUMNS
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function addWeekColumn() {
   numWeeks++;
   saveState();
@@ -1293,18 +1307,18 @@ function onStartDateChange(val) {
   render();
 }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 //  PDF / PRINT
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 function savePDF() {
   window.print();
 }
 
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 
-// ────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââ
 //  ROW DRAG-TO-REORDER (syncs tasks[] so Save preserves row order)
-// ────────────────────────────────────────
+// ââââââââââââââââââââââââââââââââââââââââ
 (function(){
   let dragSrcRow = null, ghost = null;
   function getTaskRows() {
@@ -1395,7 +1409,7 @@ function savePDF() {
 })();
 
 //  SAVE / LOAD (localStorage)
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 const LS_KEY = 'sw11_tracker_v1';
 
 function saveState() {
@@ -1438,7 +1452,7 @@ function loadState() {
 }
 
 //  INIT
-// ═══════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââ
 loadState();
 render();
 </script>
