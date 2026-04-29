@@ -1137,6 +1137,7 @@ document.addEventListener('mouseup', () => {
   if (task) { task.wStart = pendingStart; task.wEnd = pendingEnd; }
   drag = null;
   document.body.classList.remove('is-dragging');
+  saveState();
   render();
 });
 
@@ -1169,6 +1170,7 @@ document.addEventListener('mousemove', function(e) {
 
 document.addEventListener('mouseup', function() {
   if (!msDrag) return; msDrag = null;
+  saveState();
   document.body.classList.remove('is-dragging');
 });
 
@@ -1178,6 +1180,7 @@ document.addEventListener('mouseup', function() {
 function deleteTask(id) {
   if (!confirm('Delete this task?')) return;
   tasks = tasks.filter(t => t.id !== id);
+  saveState();
   render();
 }
 
@@ -1191,6 +1194,7 @@ function addTaskToDisc(discId) {
     name: 'New Task – click to edit', sub: 'Input: click to edit',
     pm: 'PM Lead', sc: '–', wStart: 1, wEnd: 2,
     status: 'Not Started', color: disc.color });
+  saveState();
   render();
   setTimeout(() => {
     const el = document.querySelector('[data-id="' + id + '"] .task-name');
@@ -1208,6 +1212,7 @@ function addMilestoneToDisc(discId) {
     name: 'Milestone – click to edit', sub: 'Description – click to edit',
     pm: '', sc: '', wStart: 1, wEnd: 1, status: 'Not Started', color: '#d97706',
     markers: [{ week: 1, label: 'MS-' + id }] });
+  saveState();
   render();
   setTimeout(() => {
     const el = document.querySelector('[data-id="' + id + '"] .task-name');
@@ -1224,6 +1229,7 @@ function addMilestoneMarker(taskId) {
   task.markers.push({ week: nw, label: task.no });
   const tlEl = document.getElementById('tl-' + taskId);
   if (tlEl) tlEl.innerHTML = buildMilestoneTimeline(task) + buildAddMarkerBtn(taskId);
+  saveState();
 }
 
 function addGlobalTask() {
@@ -1245,6 +1251,7 @@ function cycleColor(id) {
   const bar = document.getElementById(`bar-${id}`);
   if (dot) dot.style.background = task.color;
   if (bar) bar.style.background = task.color;
+  saveState();
 }
 
 function cycleStatus(id) {
@@ -1259,11 +1266,13 @@ function cycleStatus(id) {
     badge.style.color = ss.color;
     badge.textContent = task.status;
   }
+  saveState();
 }
 
 function saveField(id, field, value) {
   const task = tasks.find(t => t.id === id);
   if (task) task[field] = value.trim() || task[field];
+  saveState();
 }
 
 // ═══════════════════════════════════════════════
@@ -1271,6 +1280,7 @@ function saveField(id, field, value) {
 // ═══════════════════════════════════════════════
 function addWeekColumn() {
   numWeeks++;
+  saveState();
   render();
   // Scroll to reveal new column
   const outer = document.querySelector('.gantt-outer');
@@ -1279,6 +1289,7 @@ function addWeekColumn() {
 
 function onStartDateChange(val) {
   weekStartDate = val ? new Date(val) : null;
+  saveState();
   render();
 }
 
@@ -1365,6 +1376,7 @@ function savePDF() {
     if (targetRow && targetRow !== dragSrcRow) {
       dragSrcRow.parentNode.insertBefore(dragSrcRow, before ? targetRow : targetRow.nextSibling);
       syncTasksToDOM();
+      saveState();
     }
     dragSrcRow = null;
     document.removeEventListener('mousemove', onMove);
