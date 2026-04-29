@@ -1,0 +1,1434 @@
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SW11 | AOR Authority Approvals &amp; Building Permit</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6f9;
+      color: #2d3748;
+      padding: 20px;
+    }
+
+    /* ââ HEADER ââ */
+    .header {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 16px 28px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; color: #0f1e35; letter-spacing: 0.5px; }
+    .header p  { font-size: 11px; color: #4a6080; margin-top: 4px; }
+
+    /* ââ INFO BANNER ââ */
+    .info-banner {
+      background: linear-gradient(135deg, #1a365d, #2b6cb0);
+      border-radius: 8px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .info-banner .ib-icon { font-size: 20px; }
+    .info-banner .ib-body { flex: 1; }
+    .info-banner .ib-title { font-size: 12.5px; font-weight: 700; color: #fff; }
+    .info-banner .ib-sub   { font-size: 10px; color: #bee3f8; margin-top: 2px; }
+
+    /* ââ CONTROLS ââ */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+    .filter-tab {
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      font-size: 9.5px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #4a5568;
+      transition: all 0.15s;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+    .filter-tab:hover { border-color: #3182ce; color: #3182ce; }
+    .filter-tab.active { background: #1a365d; color: #fff; border-color: #1a365d; }
+
+    .ctrl-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .ctrl-label { font-size: 10px; color: #718096; font-weight: 600; white-space: nowrap; }
+    .ctrl-input {
+      font-size: 11px; padding: 5px 8px;
+      border: 1.5px solid #e2e8f0; border-radius: 6px;
+      color: #2d3748; background: #fff; cursor: pointer;
+    }
+    .ctrl-input:focus { outline: none; border-color: #3182ce; }
+
+    .btn {
+      padding: 6px 13px;
+      border-radius: 6px;
+      border: none;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-success { background: #38a169; color: #fff; }
+    .btn-success:hover { background: #276749; }
+    .btn-blue { background: #3182ce; color: #fff; }
+    .btn-blue:hover { background: #2c5282; }
+    .btn-pdf { background: #e53e3e; color: #fff; }
+    .btn-pdf:hover { background: #c53030; }
+    .btn-save { background: #38a169; color: #fff; }
+    .btn-save:hover { background: #276749; }
+    .btn-save.saved { background: #276749; }
+
+    /* ââ GANTT OUTER (scrollable) ââ */
+    .gantt-outer {
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      position: relative;
+    }
+    .gantt-header-outer {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      overflow: hidden;
+      border-radius: 10px 10px 0 0;
+    }
+    .gantt-header-outer .gantt-wrap-hdr {
+      background: #1a202c;
+      min-width: fit-content;
+    }
+    .gantt-scroll {
+      overflow-x: auto;
+    }
+    .gantt-wrap {
+      background: white;
+      border-radius: 0 0 10px 10px;
+      min-width: fit-content;
+    }
+
+    /* ââ ROWS ââ */
+    .g-row {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid #f0f4f8;
+      min-height: 42px;
+      position: relative;
+    }
+    .g-row:hover .del-btn { opacity: 1; }
+    .g-row.hdr  { background: #1a202c; min-height: 0; }
+    .g-row.disc-hdr { min-height: 0; }
+    .g-row.phase-hdr { min-height: 0; background: #f7fafc; border-top: 1px solid #e2e8f0; }
+    .g-row.hidden { display: none; }
+
+    /* ââ DISCIPLINE BANNER ââ */
+    .disc-banner {
+      width: 100%;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .disc-banner .disc-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+    .disc-banner.collapsed .disc-arrow { transform: rotate(-90deg); }
+    .disc-banner .disc-count {
+      margin-left: auto;
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 9px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ââ PHASE LABEL ââ */
+    .phase-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #718096;
+      padding: 4px 16px 4px 26px;
+      width: 100%;
+    }
+
+    /* ââ FIXED COLUMNS ââ */
+    .c-no {
+      width: 54px; flex-shrink: 0;
+      padding: 6px 4px 6px 10px;
+      border-right: 1px solid #e8ecf0;
+      display: flex; align-items: center;
+    }
+    .c-no.hdr-cell {
+      border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0; padding: 9px 4px 9px 10px;
+    }
+    .c-task {
+      width: 240px; flex-shrink: 0;
+      padding: 6px 8px;
+      border-right: 1px solid #e8ecf0;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .c-task.hdr-cell {
+      border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+    }
+    .c-pm {
+      width: 108px; flex-shrink: 0;
+      padding: 6px 6px;
+      border-right: 1px solid #e8ecf0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .c-pm.hdr-cell {
+      border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+    }
+    .c-sc {
+      width: 98px; flex-shrink: 0;
+      padding: 6px 6px;
+      border-right: 1px solid #e8ecf0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .c-sc.hdr-cell {
+      border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+    }
+    .c-status {
+      width: 88px; flex-shrink: 0;
+      padding: 6px 4px;
+      border-right: 1px solid #e8ecf0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .c-status.hdr-cell {
+      border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+    }
+    .c-timeline { flex: 1; position: relative; min-width: 720px; }
+
+    /* ââ WEEK HEADERS ââ */
+    .week-hdrs { display: flex; }
+    .week-hdr {
+      flex: 1;
+      text-align: center;
+      padding: 7px 2px 5px;
+      border-right: 1px solid #2d3748;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #e2e8f0;
+      min-width: 48px;
+      position: relative;
+    }
+    .week-hdr:last-child { border-right: none; }
+    .week-hdr .wn { display: block; }
+    .week-hdr .wd { display: block; font-size: 8px; font-weight: 400; color: #90a8c3; margin-top: 1px; }
+    .week-hdr.add-col {
+      flex: none;
+      width: 34px;
+      cursor: pointer;
+      color: #38a169;
+      border-left: 2px dashed #2d4a3a;
+      font-size: 18px;
+      font-weight: 300;
+      padding: 4px 2px;
+    }
+    .week-hdr.add-col:hover { background: #1a2e1a; }
+
+    /* ââ TASK INFO ââ */
+    .task-no-text {
+      font-size: 9px; font-weight: 800; color: #3182ce;
+      white-space: nowrap; outline: none; border-radius: 3px;
+      cursor: text; min-width: 28px; display: inline-block;
+    }
+    .task-no-text:focus {
+      background: #ebf8ff; padding: 1px 4px;
+      box-shadow: 0 0 0 2px #bee3f8;
+    }
+    .task-no-text:hover:not(:focus) {
+      background: #f0f7ff; border-radius: 3px;
+    }
+    .task-color-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      cursor: pointer; border: 1.5px solid rgba(0,0,0,0.1);
+      transition: transform 0.12s;
+    }
+    .task-color-dot:hover { transform: scale(1.5); }
+    .task-info { flex: 1; min-width: 0; }
+    .task-name, .task-sub {
+      display: block; outline: none; width: 100%;
+      white-space: normal; overflow: visible;
+      border-radius: 3px;
+    }
+    .task-name {
+      font-size: 11px; font-weight: 600; color: #1a202c;
+    }
+    .task-name:focus { background: #ebf8ff; padding: 1px 4px; white-space: normal; overflow: visible; }
+    .task-sub {
+      font-size: 9px; color: #a0aec0; margin-top: 0px;
+    }
+    .task-sub:focus { background: #f7fafc; padding: 1px 4px; white-space: normal; overflow: visible; }
+
+    .pm-text, .sc-text {
+      font-size: 9px; font-weight: 600; color: #4a5568;
+      background: #edf2f7; border-radius: 20px;
+      padding: 2px 6px; text-align: center;
+      outline: none; width: 100%; display: block;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      cursor: text;
+    }
+    .pm-text:focus, .sc-text:focus { background: #ebf8ff; color: #2b6cb0; border-radius: 4px; }
+
+    .status-badge {
+      font-size: 8.5px; font-weight: 700;
+      border-radius: 10px;
+      padding: 3px 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-block;
+      transition: all 0.12s;
+      border: none;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .status-badge:hover { opacity: 0.75; transform: scale(1.05); }
+
+    .del-btn {
+      opacity: 0; background: none; border: none; cursor: pointer;
+      color: #cbd5e0; font-size: 12px; line-height: 1;
+      padding: 0 2px; flex-shrink: 0;
+      transition: color 0.12s, opacity 0.12s;
+    }
+    .del-btn:hover { color: #e53e3e; }
+
+    /* ââ GRID LINES ââ */
+    .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #f0f4f8; pointer-events: none; z-index: 0; }
+    .grid-alt   { position: absolute; top: 0; bottom: 0; background: rgba(0,0,0,0.012); pointer-events: none; z-index: 0; }
+
+    /* ââ BAR ââ */
+    .g-bar {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      height: 24px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: grab; user-select: none; z-index: 1;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      transition: box-shadow 0.1s, height 0.1s;
+    }
+    .g-bar:hover { height: 27px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+    .g-bar:active { cursor: grabbing; }
+    body.is-dragging .g-bar { transition: none; }
+    body.is-dragging { cursor: grabbing !important; user-select: none; }
+    body.is-dragging * { cursor: grabbing !important; }
+
+    /* â ROW DRAG-TO-REORDER â */
+    .row-drag-handle {
+      display: flex; align-items: center; justify-content: center;
+      width: 14px; flex-shrink: 0;
+      cursor: grab; color: #b0b8c4; font-size: 11px;
+      opacity: 0; transition: opacity 0.15s; user-select: none;
+      padding-right: 2px;
+    }
+    .row-drag-handle:active { cursor: grabbing; }
+    .g-row:hover .row-drag-handle { opacity: 1; }
+    .g-row.row-dragging { opacity: 0.4; background: #eaf2ff !important; }
+    .g-row.row-drag-over-top    { border-top:    2.5px solid #3b82f6 !important; }
+    .g-row.row-drag-over-bottom { border-bottom: 2.5px solid #3b82f6 !important; }
+    .row-drag-ghost {
+      position: fixed; z-index: 99999; pointer-events: none;
+      background: #fff; border: 1.5px solid #3b82f6; border-radius: 6px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      padding: 6px 12px; font-size: 12px; color: #1a202c;
+      max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      opacity: 0.95;
+    }
+
+    .bar-lbl {
+      font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.92);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      padding: 0 14px; pointer-events: none; letter-spacing: 0.2px;
+    }
+    .bar-handle {
+      position: absolute; top: 0; bottom: 0; width: 9px;
+      cursor: ew-resize; z-index: 2; display: flex; align-items: center; justify-content: center;
+    }
+    .bar-handle::after { content: 'â®'; font-size: 9px; color: rgba(255,255,255,0.45); }
+    .bar-handle.left  { left: 0;  border-radius: 5px 0 0 5px; }
+    .bar-handle.right { right: 0; border-radius: 0 5px 5px 0; }
+
+    /* ââ ADD ROW ââ */
+    .add-row-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      color: #a0aec0; font-size: 11px; font-weight: 600;
+      padding: 7px 16px; text-align: left;
+      transition: background 0.12s, color 0.12s;
+      width: 100%;
+    }
+    .add-row-btn:hover { background: #f7fafc; color: #38a169; }
+    .add-row-btn .plus { font-size: 14px; color: #38a169; line-height: 1; }
+
+    /* ââ MILESTONE ââ */
+    /* -- MILESTONE SYMBOL ROW -- */
+    .g-row.milestone-symbol-row {
+      background: linear-gradient(90deg, #fffbeb 0%, #fefce8 100%);
+      border-bottom: 1px solid #fcd34d; min-height: 42px;
+    }
+    .milestone-symbol-row .c-status { overflow: visible; }
+    .milestone-symbol-row .status-badge { display: none; }
+    .milestone-symbol-row .c-timeline { overflow: visible !important; }
+    .ms-diamond-wrap {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 12px; height: 12px; cursor: grab; z-index: 8;
+    }
+    .ms-diamond-wrap:active { cursor: grabbing; }
+    .ms-diamond-wrap .ms-d {
+      width: 12px; height: 12px; background: #d97706; transform: rotate(45deg);
+      border: 1.5px solid #92400e; border-radius: 1px;
+      box-shadow: 0 1px 4px rgba(217,119,6,0.45);
+      transition: background 0.12s, transform 0.12s;
+    }
+    .ms-diamond-wrap:hover .ms-d { background: #b45309; transform: rotate(45deg) scale(1.15); }
+    .ms-diamond-wrap.is-dragging .ms-d { background: #92400e; }
+    .ms-span-bar {
+      position: absolute; height: 4px;
+      background: linear-gradient(90deg, #fcd34d, #f59e0b);
+      border-radius: 2px; top: 50%; transform: translateY(-50%);
+      z-index: 5; pointer-events: none;
+    }
+    .ms-label {
+      position: absolute; top: calc(50% - 18px);
+      font-size: 9px; font-weight: 700; color: #92400e;
+      white-space: nowrap; pointer-events: none; z-index: 9;
+      background: rgba(255,251,235,0.9); padding: 1px 3px; border-radius: 3px;
+    }
+    .add-milestone-btn {
+      display: flex; align-items: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      color: #92400e; font-size: 11px; font-weight: 600;
+      padding: 7px 16px; text-align: left;
+      transition: background 0.12s; border-left: 1px solid #fcd34d;
+    }
+    .add-milestone-btn:hover { background: #fffbeb; color: #b45309; }
+
+    .milestone-row {
+      background: linear-gradient(135deg, #0f1e35, #1a365d);
+      padding: 13px 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .milestone-row .m-icon  { font-size: 20px; }
+    .milestone-row .m-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .milestone-row .m-sub   { font-size: 10px; color: #90a8c3; margin-top: 2px; }
+    .milestone-row .m-date  {
+      margin-left: auto; background: rgba(255,255,255,0.1); border-radius: 6px;
+      padding: 5px 12px; font-size: 11px; font-weight: 700; color: #c9a84c;
+    }
+
+    /* ââ LEGEND ââ */
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #718096; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ââ TIP ââ */
+    .tip { font-size: 10px; color: #a0aec0; margin-top: 8px; padding-left: 2px; }
+    .tip kbd { background: #e2e8f0; border-radius: 3px; padding: 1px 5px; font-size: 9.5px; color: #4a5568; }
+
+    /* ââ PRINT / PDF ââ */
+    @media print {
+      @page { size: A2 landscape; margin: 8mm; }
+      body { background: white; padding: 4mm; }
+      .controls, .tip, .btn, .del-btn, .add-row-btn,
+      .bar-handle, .week-hdr.add-col { display: none !important; }
+      .gantt-outer { overflow: visible; box-shadow: none; }
+      .gantt-wrap  { border-radius: 0; }
+      .header, .info-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius: 0; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .g-row { break-inside: avoid; }
+      .g-bar { box-shadow: none !important; }
+    }
+  
+    /* ââ PASSWORD GATE ââ */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 99999;
+      background: linear-gradient(135deg, #1a365d 0%, #2a4a7f 50%, #1e3a5f 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    #pw-box {
+      background: #fff; border-radius: 16px;
+      padding: 40px 44px 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      text-align: center; width: 340px;
+    }
+    #pw-logo { font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #1a365d; text-transform: uppercase; margin-bottom: 6px; }
+    #pw-title { font-size: 18px; font-weight: 700; color: #1a202c; margin-bottom: 4px; }
+    #pw-sub { font-size: 12px; color: #718096; margin-bottom: 24px; }
+    #pw-input {
+      width: 100%; box-sizing: border-box;
+      padding: 11px 14px; font-size: 15px;
+      border: 2px solid #e2e8f0; border-radius: 8px;
+      outline: none; text-align: center; letter-spacing: 2px;
+      color: #1a202c; transition: border-color 0.15s; margin-bottom: 14px;
+    }
+    #pw-input:focus { border-color: #3182ce; }
+    #pw-input.shake { animation: pw-shake 0.35s ease; border-color: #e53e3e !important; }
+    @keyframes pw-shake {
+      0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-6px); }
+      40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(4px); }
+    }
+    #pw-btn {
+      width: 100%; padding: 11px; font-size: 14px; font-weight: 700;
+      background: #1a365d; color: #fff; border: none; border-radius: 8px;
+      cursor: pointer; letter-spacing: 0.5px; transition: background 0.15s;
+    }
+    #pw-btn:hover { background: #2c5282; }
+    #pw-err { font-size: 12px; color: #e53e3e; margin-top: 10px; min-height: 16px; font-weight: 600; }
+  
+  </style>
+</head>
+<body>
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div id="pw-box">
+    <div id="pw-logo">SW11 Â· LDC Monitoring</div>
+    <div id="pw-title">Password Required</div>
+    <div id="pw-sub">Enter your access password to continue</div>
+    <input id="pw-input" type="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+      onkeydown="if(event.key==='Enter')checkPw()"
+      autocomplete="off" spellcheck="false"/>
+    <button id="pw-btn" onclick="checkPw()">Access Programme</button>
+    <div id="pw-err"></div>
+  </div>
+</div>
+
+
+<!-- HEADER -->
+<div class="header">
+  <h1>SW11  |  LDC Sub-Consultant Monitoring Workflow  +  AOR Authority Approvals  |  Stage 3 DD</h1>
+  <p>Dubai Creek Harbour â Plot SW11  &nbsp;Â·&nbsp;  Design Tomorrow FZ-LLC (LDC) + Zutari (AOR)  &nbsp;Â·&nbsp;  LOA 8348  &nbsp;Â·&nbsp;  AOR Report: DCH-SW11-ZUT-RPT-SD-AOR-400001 Rev.4 (19-Feb-26)</p>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="filter-tabs" id="filterTabs"></div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Week 1 Start:</span>
+    <input type="date" class="ctrl-input" id="startDateInput" onchange="onStartDateChange(this.value)"/>
+  </div>
+  <button class="btn btn-blue" onclick="addWeekColumn()">ï¼ Add Week</button>
+  <button class="btn btn-success" onclick="addGlobalTask()">ï¼ Add Task</button>
+  <button class="btn btn-pdf" onclick="savePDF()">ð¨ Save PDF</button>
+  <button class="btn btn-save" id="saveBtn" onclick="saveState()" title="Save all changes to browser storage">&#128190; Save</button>
+</div>
+
+<!-- GANTT -->
+<div class="gantt-outer">
+  <div class="gantt-header-outer" id="gantt-header"><div class="gantt-wrap-hdr"></div></div>
+  <div class="gantt-scroll" id="gantt-scroll">
+    <div class="gantt-wrap" id="gantt"></div>
+  </div>
+</div>
+
+<div class="tip">
+  ð¡ <kbd>Click</kbd> task name / PM / SC to edit &nbsp;Â·&nbsp;
+  <kbd>Drag</kbd> bar to move &nbsp;Â·&nbsp;
+  <kbd>Drag edges</kbd> to resize &nbsp;Â·&nbsp;
+  <kbd>â</kbd> dot to change colour &nbsp;Â·&nbsp;
+  <kbd>Status badge</kbd> to cycle status &nbsp;Â·&nbsp;
+  <kbd>â¶ Discipline header</kbd> to collapse/expand &nbsp;Â·&nbsp;
+  <kbd>ï¼ Add Week</kbd> to extend timeline
+</div>
+
+<div class="legend" id="legend"></div>
+
+<script>
+
+// ââââââââââââââââââââââââââââââââââââââââ
+//  PASSWORD GATE
+// ââââââââââââââââââââââââââââââââââââââââ
+(function(){
+  function djb2(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    return (h >>> 0).toString(16).padStart(8,'0');
+  }
+  const CORRECT = djb2('DTSW11');
+  function checkPw() {
+    const val = document.getElementById('pw-input').value.trim();
+    const err = document.getElementById('pw-err');
+    const input = document.getElementById('pw-input');
+    if (djb2(val) === CORRECT) {
+      document.getElementById('pw-gate').classList.add('hidden');
+      try { sessionStorage.setItem('sw11_auth','1'); } catch(e){}
+    } else {
+      err.textContent = 'Incorrect password. Please try again.';
+      input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+      input.value = '';
+      setTimeout(() => { input.classList.remove('shake'); err.textContent=''; }, 1500);
+    }
+  }
+  window.checkPw = checkPw;
+  window.addEventListener('DOMContentLoaded', function() {
+    try { if (sessionStorage.getItem('sw11_auth') === '1') { document.getElementById('pw-gate').classList.add('hidden'); return; } } catch(e){}
+    const inp = document.getElementById('pw-input');
+    if (inp) setTimeout(() => inp.focus(), 100);
+  });
+})();
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  CONFIGURATION
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+let numWeeks = 16;
+let weekStartDate = null;
+let activeFilter = 'all';
+
+const DISC_CONFIG = [
+  { id:'aor', label:'ARCHITECT OF RECORD (AOR) â AUTHORITY APPROVALS & BUILDING PERMIT', short:'AOR', color:'#c27303' },
+];
+
+const DISC_MAP = {};
+DISC_CONFIG.forEach(d => { DISC_MAP[d.id] = d; });
+
+const STATUSES = ['Not Started','In Progress','Complete','Blocked','On Hold'];
+const STATUS_STYLE = {
+  'Not Started':{ bg:'#edf2f7', color:'#718096' },
+  'In Progress': { bg:'#ebf8ff', color:'#2b6cb0' },
+  'Complete':    { bg:'#f0fff4', color:'#276749' },
+  'Blocked':     { bg:'#fff5f5', color:'#c53030' },
+  'On Hold':     { bg:'#fffbeb', color:'#b7791f' },
+};
+
+const COLORS = [
+  '#1a365d','#744210','#22543d','#553c9a','#276749',
+  '#2c5282','#c53030','#285e61','#b7791f','#2d6a4f',
+  '#6b46c1','#2d3748','#3182ce','#d69e2e','#e53e3e'
+];
+
+let collapsed = {};
+let nextId = 200;
+let drag = null;
+let msDrag = null;
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  TASK DATA  (72 tasks from Excel)
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+let tasks = [
+  // ââ ARCHITECT OF RECORD (AOR) â AUTHORITY APPROVALS âââââââââââââââââââââ
+  //
+  //  Week mapping: Wk 1 = DD programme start (~Apr 2026, post-SD approval).
+  //  Bar durations are the "Estimated Time (For Approval)" from the Approvals
+  //  Tracker (Appendix B, DCH-SW11-ZUT-RPT-SD-AOR-400001-00, Rev.4, 19-Feb-26).
+  //  Design stages:  General/Pre-Concept/Concept â Wks 1-3
+  //                  Schematic                   â Wks 1-4
+  //                  Full DD                     â Wks 12-16
+  //  Status reflects actual tracker status as at 19-Feb-26.
+  //
+  // PHASE 1 â DATA COLLECTION & INITIAL NOCs
+  { id:101, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D1',
+    name:'EMAAR â Confirm LOA / Owner\u2019s Appointment Letter on file',
+    sub:'Est. approval: 35 days | Design Stage: General | Status: CLOSED 11-Feb-26',
+    pm:'Project Director', sc:'EMAAR', wStart:1, wEnd:5, status:'Complete', color:'#c27303' },
+  { id:102, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D2',
+    name:'DDA â Affection Plan / Site Plan confirmation (CRITICAL DELAY â chase resolution)',
+    sub:'Est. approval: 110 days | Design Stage: General | Planned: 03-Nov-25 | CRITICAL DELAY',
+    pm:'Project Director', sc:'DDA', wStart:1, wEnd:16, status:'Blocked', color:'#e53e3e' },
+  { id:103, disc:'aor', phase:'PHASE 1 â DATA COLLECTION & INITIAL NOCs', no:'AOR-D3',
+    name:'DDA â Site Topography Survey; EMAAR â Site Details/Plot Information RFIs',
+    sub:'Est. approval: 4 days each | Design Stage: Pre-Concept | Both items: Not Yet Due',
+    pm:'PM Lead', sc:'DDA / EMAAR', wStart:1, wEnd:1, status:'Complete', color:'#c27303' },
+
+  // PHASE 2 â PROJECT REGISTRATION (all items CLOSED as at 19-Feb-26)
+  { id:104, disc:'aor', phase:'PHASE 2 â PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R1',
+    name:'All Authorities â Project Registration NOCs (RTA, DEWA, du, DUSUP, EMPOWER, Etisalat, ITS, Parking, PTA, Rail, Roads)',
+    sub:'Est. approval: 10 days each | Design Stage: Pre-Concept | Planned: 09-Feb-26 | ALL CLOSED',
+    pm:'PM Lead + Proj Director', sc:'Multi-authority', wStart:1, wEnd:2, status:'Complete', color:'#c27303' },
+  { id:105, disc:'aor', phase:'PHASE 2 â PROJECT REGISTRATION (all CLOSED Feb 2026)', no:'AOR-R2',
+    name:'EMAAR â Geotechnical & Geophysical Work Permit',
+    sub:'Est. approval: 15 days | Design Stage: Pre-Concept | Planned: 24-Nov-25 | Not Yet Due',
+    pm:'PM Lead', sc:'EMAAR', wStart:1, wEnd:3, status:'Not Started', color:'#c27303' },
+
+  // PHASE 3 â PHASED PERMITS: CONCEPT STAGE
+  { id:106, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP1',
+    name:'DDA â Preliminary Submission (Concept stage)',
+    sub:'Est. approval: 10 days | Design Stage: Concept | Planned: 10-Jan-26 | Submission: 15-Jan-26 | Due: 25-Jan-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:107, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP2',
+    name:'DDA â Site Preparation Works: Site Office Permit + Hoarding & Sign Board Permit',
+    sub:'Est. approval: 4 days each | Design Stage: Concept | Planned: 09-Feb-26 | Submission: 12-Feb-26 | Due: 16-Feb-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:1, status:'Not Started', color:'#c27303' },
+  { id:108, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP3',
+    name:'DDA â Site Preparation Works: Enabling Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Concept | Planned: 07-Feb-26 | Submission: 12-Feb-26 | Due: 23-Feb-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:109, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP4',
+    name:'DDA â Shoring & Excavation Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
+    pm:'PM Lead', sc:'DDA', wStart:1, wEnd:2, status:'Not Started', color:'#c27303' },
+  { id:110, disc:'aor', phase:'PHASE 3 â PHASED PERMITS: CONCEPT & SCHEMATIC STAGE', no:'AOR-PP5',
+    name:'DDA â Piling Works Permit',
+    sub:'Est. approval: 11 days | Design Stage: Schematic | Planned: 25-Mar-26 | Submission: 30-Mar-26 | Due: 10-Apr-26',
+    pm:'PM Lead', sc:'DDA', wStart:2, wEnd:3, status:'Not Started', color:'#c27303' },
+
+  // PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE
+  { id:111, disc:'aor', phase:'PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E1',
+    name:'RTA â Traffic Impact Study (TIS) submission and approval',
+    sub:'Est. approval: 45 days | Design Stage: Schematic | Planned: 27-Feb-26 | Submission: 27-Feb-26 | Due: 13-Apr-26',
+    pm:'PM Lead', sc:'RTA', wStart:1, wEnd:6, status:'In Progress', color:'#c27303' },
+  { id:112, disc:'aor', phase:'PHASE 4 â EXTERNAL APPROVALS: SCHEMATIC STAGE', no:'AOR-E2',
+    name:'DDA â Design Exceptions / Non-compliance items resolution (natural light, ground floor usage)',
+    sub:'Est. approval: â | Design Stage: Concept | Coordinate design response with Arch team | Not Yet Due',
+    pm:'PM Lead + Proj Arch', sc:'DDA', wStart:1, wEnd:8, status:'Not Started', color:'#c27303' },
+
+  // PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION
+  { id:113, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP1',
+    name:'Compile and QA full DD authority submission package (Architectural, Structural, MEP, FLS, CCTV, Telecom)',
+    sub:'Input: Final packages from all disciplines; QAQC Checklist (signed); AOR mark-up responses resolved',
+    pm:'PM Lead + Proj Director', sc:'Zutari (AOR)', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
+  { id:114, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP2',
+    name:'Coordinate NOC-ready drawings across all disciplines for authority submission (Arch, Structural, MEP, FLS, FaÃ§ade)',
+    sub:'Input: Architecture drawings; all SC final packages; AOR review sign-off',
+    pm:'PM Lead + BIM Mgr', sc:'All SCs', wStart:8, wEnd:12, status:'Not Started', color:'#c27303' },
+  { id:115, disc:'aor', phase:'PHASE 5 â FULL DD SUBMISSION PACKAGE PREPARATION (Wks 8â12)', no:'AOR-FP3',
+    name:'DCAA â Dubai Civil Aviation Authority NOC submission and approval',
+    sub:'Est. approval: 11 days | Design Stage: Full DD | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DCAA', wStart:10, wEnd:12, status:'Not Started', color:'#c27303' },
+
+  // PHASE 6 â FULL DD PHASED PERMITS (DDA) â all items planned 25-Jul-26 â submit 30-Jul â due 10-Aug
+  { id:116, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP1',
+    name:'DDA â Architectural Package for Building Permit',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Est. approval: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:117, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP2',
+    name:'DDA â Substructure Permit + Superstructure Permit',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:118, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP3',
+    name:'DDA â Sewerage Plot Connection + Drainage & FIC Location + Storm Water Plot Connection',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:119, disc:'aor', phase:'PHASE 6 â FULL DD PHASED PERMITS: DDA (Est. 11 days each)', no:'AOR-DP4',
+    name:'DDA â Mechanical System Permit + Building Waste Management Report',
+    sub:'Est. approval: 11 days each | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DDA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+
+  // PHASE 7 â EXTERNAL AUTHORITY NOC SUBMISSIONS (Full DD)
+  { id:120, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA1',
+    name:'DEWA-ED â Electrical Load NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:121, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA2',
+    name:'DEWA-ED â Electrical LV/HV NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DEWA-ED', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:122, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA3',
+    name:'DEWA-WD â Water Demand NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:123, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA4',
+    name:'DEWA-WD â Water Supply NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DEWA-WD', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:124, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA5',
+    name:'DCD â Fire Life Safety (FLS) + Pump Room Details NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:125, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA6',
+    name:'DCD â FaÃ§ade Approval NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead + Proj Arch', sc:'DCD (Civil Defence)', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:126, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA7',
+    name:'ETISALAT / du â Telecom NOC',
+    sub:'Est. approval: 30 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 29-Aug-26',
+    pm:'PM Lead', sc:'ETISALAT / du', wStart:12, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:127, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA8',
+    name:'SIRA â CCTV NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'SIRA', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+  { id:128, disc:'aor', phase:'PHASE 7 â EXTERNAL NOC SUBMISSIONS: FULL DD STAGE', no:'AOR-EA9',
+    name:'Empower â Empower NOC',
+    sub:'Est. approval: 11 days | Full DD | Planned: 25-Jul-26 | Submission: 30-Jul-26 | Due: 10-Aug-26',
+    pm:'PM Lead', sc:'Empower', wStart:12, wEnd:14, status:'Not Started', color:'#c27303' },
+
+  // PHASE 8 â FINAL BUILDING PERMIT
+  { id:129, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP1',
+    name:'DDA â Main Building Permit Application submission',
+    sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
+    pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
+  { id:130, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP2',
+    name:'DDA â Plot Allocation / Demarcation',
+    sub:'Est. approval: 4 days | Full DD | Planned: 10-Aug-26 | Submission: 13-Aug-26 | Due: 17-Aug-26',
+    pm:'Project Director', sc:'DDA', wStart:14, wEnd:15, status:'Not Started', color:'#c27303' },
+  { id:131, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP3',
+    name:'DDA â Obtaining Permit Approval',
+    sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
+    pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
+  { id:132, disc:'aor', phase:'PHASE 8 â FINAL BUILDING PERMIT', no:'AOR-BP4',
+    name:'DDA â Obtaining Building Permit (FINAL)',
+    sub:'Est. approval: 4 days | Full DD | Planned: 26-Aug-26 | Submission: 29-Aug-26 | Due: 02-Sep-26',
+    pm:'Project Director', sc:'DDA', wStart:15, wEnd:16, status:'Not Started', color:'#c27303' },
+];
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  HELPERS
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function escHtml(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function blurOnEnter(e) { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } }
+function pct(n) { return (n / numWeeks) * 100; }
+
+function weekLabel(i) {
+  if (!weekStartDate) return '';
+  const d = new Date(weekStartDate);
+  d.setDate(d.getDate() + (i - 1) * 7);
+  return d.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+}
+
+function statusStyle(s) {
+  const st = STATUS_STYLE[s] || STATUS_STYLE['Not Started'];
+  return `background:${st.bg};color:${st.color};`;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  FILTER TABS
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function buildFilterTabs() {
+  const tabs = document.getElementById('filterTabs');
+  let html = `<button class="filter-tab${activeFilter==='all'?' active':''}" onclick="setFilter('all')">All Disciplines</button>`;
+  DISC_CONFIG.forEach(d => {
+    const cnt = tasks.filter(t => t.disc === d.id).length;
+    html += `<button class="filter-tab${activeFilter===d.id?' active':''}" onclick="setFilter('${d.id}')"
+      style="${activeFilter===d.id?`background:${d.color};border-color:${d.color};`:''}"
+    >${d.short} <span style="opacity:0.65">(${cnt})</span></button>`;
+  });
+  tabs.innerHTML = html;
+}
+function setFilter(id) { activeFilter = id; render(); }
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  RENDER
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function initHeaderScrollSync() {
+  const scrollEl = document.getElementById('gantt-scroll');
+  const headerEl = document.getElementById('gantt-header');
+  if (!scrollEl || !headerEl) return;
+  scrollEl.onscroll = function() {
+    headerEl.scrollLeft = scrollEl.scrollLeft;
+  };
+  headerEl.scrollLeft = scrollEl.scrollLeft;
+}
+
+function buildHeaderRow() {
+  let weekCells = '';
+  for (let i = 1; i <= numWeeks; i++) {
+    const lbl = weekLabel(i);
+    weekCells += `<div class="week-hdr"><span class="wn">Wk ${i}</span>${lbl?`<span class="wd">${lbl}</span>`:''}</div>`;
+  }
+  weekCells += `<div class="week-hdr add-col" title="Add week column" onclick="addWeekColumn()">ï¼</div>`;
+  return `
+  <div class="g-row hdr">
+    <div class="c-no hdr-cell">No.</div>
+    <div class="c-task hdr-cell">Task / PM Action</div>
+    <div class="c-pm hdr-cell">PM Responsible</div>
+    <div class="c-sc hdr-cell">Sub-Consultant</div>
+    <div class="c-status hdr-cell">Status</div>
+    <div class="c-timeline"><div class="week-hdrs">${weekCells}</div></div>
+  </div>`;
+}
+
+function buildGridLines() {
+  let html = '';
+  for (let i = 1; i < numWeeks; i++) {
+    html += `<div class="grid-line" style="left:${pct(i)}%"></div>`;
+  }
+  // Alternate column shading every 2 weeks
+  for (let i = 0; i < numWeeks; i += 4) {
+    html += `<div class="grid-alt" style="left:${pct(i)}%;width:${pct(2)}%"></div>`;
+  }
+  return html;
+}
+
+function barStyle(task) {
+  const l = pct(task.wStart - 1);
+  const w = pct(task.wEnd - task.wStart + 1);
+  return `left:calc(${l}% + 3px);width:calc(${w}% - 6px);background:${task.color};`;
+}
+
+function pct(w) { return (w / numWeeks) * 100; }
+
+function buildMilestoneTimeline(task) {
+  if (!task.markers || task.markers.length === 0) {
+    task.markers = [{ week: task.wStart || 1, label: task.no || 'MS' }];
+  }
+  let html = buildGridLines();
+  const sorted = [...task.markers].sort((a, b) => a.week - b.week);
+  if (sorted.length > 1) {
+    const lPct = pct(sorted[0].week - 1) + 100 / numWeeks / 2;
+    const rPct = pct(sorted[sorted.length-1].week - 1) + 100 / numWeeks / 2;
+    html += '<div class="ms-span-bar" style="left:' + lPct + '%;width:' + (rPct-lPct) + '%;"></div>';
+  }
+  task.markers.forEach((m, i) => {
+    const cPct = pct(m.week - 1) + 100 / numWeeks / 2;
+    html += '<div class="ms-diamond-wrap" id="msdw-' + task.id + '-' + i + '"' +
+      ' style="left:calc(' + cPct + '% - 6px);"' +
+      ' onmousedown="startMsDrag(event,' + task.id + ',' + i + ')"' +
+      ' title="Wk ' + m.week + '">' +
+      '<div class="ms-d"></div></div>' +
+      '<div class="ms-label" style="left:calc(' + cPct + '% + 9px);">' + escHtml(m.label||'') + '</div>';
+  });
+  return html;
+}
+
+function buildAddMarkerBtn(tid) {
+  return '<button onclick="addMilestoneMarker(' + tid + ')" title="Add diamond"' +
+    ' style="position:absolute;right:4px;top:50%;transform:translateY(-50%);' +
+    'background:rgba(255,251,235,0.9);border:1px solid #fcd34d;border-radius:4px;' +
+    'color:#92400e;font-size:9px;font-weight:700;padding:2px 5px;cursor:pointer;z-index:10;">' +
+    '+ &#9670;</button>';
+}
+
+function buildTaskRow(task) {
+  if (task.type === 'milestone') {
+    return '<div class="g-row milestone-symbol-row" data-id="' + task.id + '">' +
+    '<div class="row-drag-handle" onmousedown="startRowDrag(event)">&#x283F;</div>' +
+    '<div class="c-no"><span class="task-no-text" contenteditable="true"' +
+    ' onblur="saveField(' + task.id + ',\'no\',this.innerText.trim())"' +
+    ' onkeydown="blurOnEnter(event)">' + escHtml(task.no) + '</span></div>' +
+    '<div class="c-task">' +
+    '<div class="task-color-dot" style="background:#d97706;cursor:default;"></div>' +
+    '<div class="task-info">' +
+    '<span class="task-name" contenteditable="true"' +
+    ' onblur="saveField(' + task.id + ',\'name\',this.innerText)"' +
+    ' onkeydown="blurOnEnter(event)" style="color:#92400e;font-weight:700;">' + escHtml(task.name) + '</span>' +
+    '<span class="task-sub" contenteditable="true"' +
+    ' onblur="saveField(' + task.id + ',\'sub\',this.innerText)"' +
+    ' onkeydown="blurOnEnter(event)">' + escHtml(task.sub) + '</span>' +
+    '</div>' +
+    '<button class="del-btn" onclick="deleteTask(' + task.id + ')" title="Delete">&#x2715;</button>' +
+    '</div>' +
+    '<div class="c-pm"><span class="pm-text" contenteditable="true"' +
+    ' onblur="saveField(' + task.id + ',\'pm\',this.innerText)"' +
+    ' onkeydown="blurOnEnter(event)">' + escHtml(task.pm) + '</span></div>' +
+    '<div class="c-sc"><span class="sc-text" contenteditable="true"' +
+    ' onblur="saveField(' + task.id + ',\'sc\',this.innerText)"' +
+    ' onkeydown="blurOnEnter(event)">' + escHtml(task.sc) + '</span></div>' +
+    '<div class="c-status"><span style="font-size:16px;color:#d97706;">&#9670;</span></div>' +
+    '<div class="c-timeline" id="tl-' + task.id + '" style="position:relative;overflow:visible;">' +
+    buildMilestoneTimeline(task) + buildAddMarkerBtn(task.id) + '</div>' +
+    '</div>';
+  }
+  const sStyle = statusStyle(task.status);
+  return `
+  <div class="g-row" data-id="${task.id}">
+    <div class="row-drag-handle" title="Drag to reorder" onmousedown="startRowDrag(event)">&#x283F;</div>
+    <div class="c-no"><span class="task-no-text" contenteditable="true"
+        onblur="saveField(${task.id},'no',this.innerText.trim())"
+        onkeydown="blurOnEnter(event)">${escHtml(task.no)}</span></div>
+    <div class="c-task">
+      <div class="task-color-dot" style="background:${task.color}" onclick="cycleColor(${task.id})" title="Click to change colour"></div>
+      <div class="task-info">
+        <span class="task-name" contenteditable="true"
+          onblur="saveField(${task.id},'name',this.innerText)"
+          onkeydown="blurOnEnter(event)">${escHtml(task.name)}</span>
+        <span class="task-sub" contenteditable="true"
+          onblur="saveField(${task.id},'sub',this.innerText)"
+          onkeydown="blurOnEnter(event)">${escHtml(task.sub)}</span>
+      </div>
+      <button class="del-btn" onclick="deleteTask(${task.id})" title="Delete row">&#x2715;</button>
+    </div>
+    <div class="c-pm"><span class="pm-text" contenteditable="true"
+      onblur="saveField(${task.id},'pm',this.innerText)"
+      onkeydown="blurOnEnter(event)">${escHtml(task.pm)}</span></div>
+    <div class="c-sc"><span class="sc-text" contenteditable="true"
+      onblur="saveField(${task.id},'sc',this.innerText)"
+      onkeydown="blurOnEnter(event)">${escHtml(task.sc)}</span></div>
+    <div class="c-status"><span class="status-badge" style="${sStyle}"
+      onclick="cycleStatus(${task.id})" title="Click to change status">${escHtml(task.status)}</span></div>
+    <div class="c-timeline" id="tl-${task.id}">
+      ${buildGridLines()}
+      <div class="g-bar" id="bar-${task.id}" style="${barStyle(task)}"
+        onmousedown="startDrag(event,${task.id},'move')"
+        title="Drag to move">
+        <div class="bar-handle left" onmousedown="startDrag(event,${task.id},'resize-left')"></div>
+        <span class="bar-lbl">${escHtml(task.no)}: ${escHtml(task.name)}</span>
+        <div class="bar-handle right" onmousedown="startDrag(event,${task.id},'resize-right')"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildDiscHeader(disc, taskCount) {
+  const isCollapsed = collapsed[disc.id];
+  return `
+  <div class="g-row disc-hdr" data-disc="${disc.id}">
+    <div class="disc-banner${isCollapsed?' collapsed':''}" style="background:${disc.color}"
+      onclick="toggleDisc('${disc.id}')">
+      <span class="disc-arrow">â¼</span>
+      ${escHtml(disc.label)}
+      <span class="disc-count">${taskCount} tasks</span>
+    </div>
+  </div>`;
+}
+
+function buildPhaseHeader(label) {
+  return `<div class="g-row phase-hdr"><span class="phase-label">â¸ ${escHtml(label)}</span></div>`;
+}
+
+function buildAddRowBtn(discId) {
+  return '<div class="g-row" style="min-height:0;display:flex;">' +
+    '<button class="add-row-btn" style="flex:1;" onclick="addTaskToDisc(\'' + discId + '\')">' +
+    '<span class="plus">+</span> Add task to ' + DISC_MAP[discId].short + '</button>' +
+    '<button class="add-milestone-btn" onclick="addMilestoneToDisc(\'' + discId + '\')" title="Add milestone symbol row">' +
+    '&#9670; Add Milestone Row</button>' +
+    '</div>';
+}
+
+function render() {
+  const ganttHdr = document.getElementById('gantt-header').querySelector('.gantt-wrap-hdr');
+  const gantt = document.getElementById('gantt');
+  ganttHdr.innerHTML = buildHeaderRow();
+  let html = '';
+
+  DISC_CONFIG.forEach(disc => {
+    const discTasks = tasks.filter(t => t.disc === disc.id);
+    if (activeFilter !== 'all' && activeFilter !== disc.id) return;
+
+    html += buildDiscHeader(disc, discTasks.length);
+
+    if (!collapsed[disc.id]) {
+      // Render in task-array order; emit phase header only when phase changes
+      let lastPhase = null;
+      discTasks.forEach(t => {
+        if (t.phase !== lastPhase) {
+          html += buildPhaseHeader(t.phase);
+          lastPhase = t.phase;
+        }
+        html += buildTaskRow(t);
+      });
+
+      html += buildAddRowBtn(disc.id);
+    }
+  });
+
+  // Milestone footer
+  html += `
+  <div class="milestone-row">
+    <div class="m-icon">ð</div>
+    <div>
+      <div class="m-title">LDC DD Stage Consolidated Submission â All Disciplines</div>
+      <div class="m-sub">All sub-consultant packages received, reviewed &amp; QA-gated Â· QAQC Checklist signed Â· Consolidated submission to Emaar</div>
+    </div>
+    <div class="m-date">Wk 13â14</div>
+  </div>
+  <div class="milestone-row" style="background:linear-gradient(135deg,#7a4f03,#c27303)">
+    <div class="m-icon">ð</div>
+    <div>
+      <div class="m-title">AOR â Building Permit Obtained from DDA</div>
+      <div class="m-sub">All authority NOCs received Â· DDA Permit Approval Â· Full Building Permit issued (Est. 02-Sep-26)</div>
+    </div>
+    <div class="m-date">Wk 15â16</div>
+  </div>`;
+
+  gantt.innerHTML = html;
+  initHeaderScrollSync();
+  buildFilterTabs();
+  renderLegend();
+}
+
+function renderLegend() {
+  const statusItems = Object.entries(STATUS_STYLE).map(([s, st]) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${st.bg};border:1.5px solid ${st.color}"></div>${s}</div>`
+  ).join('');
+  const discItems = DISC_CONFIG.map(d =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div>${d.short}</div>`
+  ).join('');
+  document.getElementById('legend').innerHTML =
+    `<div style="display:flex;flex-wrap:wrap;gap:10px;width:100%">
+      <span style="font-size:10px;font-weight:700;color:#718096;margin-right:4px;align-self:center">STATUS:</span>
+      ${statusItems}
+      <span style="font-size:10px;font-weight:700;color:#718096;margin-left:12px;margin-right:4px;align-self:center">DISCIPLINES:</span>
+      ${discItems}
+    </div>`;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  DRAG & RESIZE
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function startDrag(e, taskId, type) {
+  e.preventDefault();
+  e.stopPropagation();
+  const task = tasks.find(t => t.id === taskId);
+  const tlEl = document.getElementById(`tl-${taskId}`);
+  const rect = tlEl.getBoundingClientRect();
+  drag = {
+    taskId, type,
+    startX:     e.clientX,
+    origStart:  task.wStart,
+    origEnd:    task.wEnd,
+    weekWidth:  rect.width / numWeeks,
+    pendingStart: task.wStart,
+    pendingEnd:   task.wEnd,
+  };
+  document.body.classList.add('is-dragging');
+}
+
+document.addEventListener('mousemove', e => {
+  if (!drag) return;
+  const { taskId, type, startX, origStart, origEnd, weekWidth } = drag;
+  const task = tasks.find(t => t.id === taskId);
+  const barEl = document.getElementById(`bar-${taskId}`);
+  if (!task || !barEl) return;
+
+  const deltaX = e.clientX - startX;
+  const snapDelta = Math.round(deltaX / weekWidth);
+  const dur = origEnd - origStart;
+  const N = numWeeks;
+
+  let ns = origStart, ne = origEnd;
+
+  if (type === 'move') {
+    ns = Math.max(1, Math.min(N - dur, origStart + snapDelta));
+    ne = ns + dur;
+  } else if (type === 'resize-left') {
+    ns = Math.max(1, Math.min(origEnd, origStart + snapDelta));
+    ne = origEnd;
+  } else if (type === 'resize-right') {
+    ns = origStart;
+    ne = Math.max(origStart, Math.min(N, origEnd + snapDelta));
+  }
+
+  drag.pendingStart = ns;
+  drag.pendingEnd   = ne;
+
+  const leftPct  = pct(ns - 1);
+  const widthPct = pct(ne - ns + 1);
+  barEl.style.left  = `calc(${leftPct}% + 3px)`;
+  barEl.style.width = `calc(${widthPct}% - 6px)`;
+  barEl.title = `Wk ${ns}â${ne}`;
+});
+
+document.addEventListener('mouseup', () => {
+  if (!drag) return;
+  const { taskId, pendingStart, pendingEnd } = drag;
+  const task = tasks.find(t => t.id === taskId);
+  if (task) { task.wStart = pendingStart; task.wEnd = pendingEnd; }
+  drag = null;
+  document.body.classList.remove('is-dragging');
+  render();
+});
+
+
+// -- MILESTONE DIAMOND DRAG --
+function startMsDrag(e, taskId, dIdx) {
+  e.preventDefault(); e.stopPropagation();
+  const task = tasks.find(t => t.id === taskId);
+  if (!task || !task.markers) return;
+  const tlEl = document.getElementById('tl-' + taskId);
+  if (!tlEl) return;
+  const rect = tlEl.getBoundingClientRect();
+  msDrag = { taskId, dIdx, startX: e.clientX,
+    origWeek: task.markers[dIdx].week, weekWidth: rect.width / numWeeks };
+  document.body.classList.add('is-dragging');
+  const w = document.getElementById('msdw-' + taskId + '-' + dIdx);
+  if (w) w.classList.add('is-dragging');
+}
+
+document.addEventListener('mousemove', function(e) {
+  if (!msDrag) return;
+  const { taskId, dIdx, startX, origWeek, weekWidth } = msDrag;
+  const task = tasks.find(t => t.id === taskId);
+  if (!task || !task.markers) return;
+  const delta = Math.round((e.clientX - startX) / weekWidth);
+  task.markers[dIdx].week = Math.max(1, Math.min(origWeek + delta, numWeeks));
+  const tlEl = document.getElementById('tl-' + taskId);
+  if (tlEl) tlEl.innerHTML = buildMilestoneTimeline(task) + buildAddMarkerBtn(taskId);
+});
+
+document.addEventListener('mouseup', function() {
+  if (!msDrag) return; msDrag = null;
+  document.body.classList.remove('is-dragging');
+});
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  TASK ACTIONS
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  tasks = tasks.filter(t => t.id !== id);
+  render();
+}
+
+function addTaskToDisc(discId) {
+  const disc = DISC_MAP[discId];
+  const discTasks = tasks.filter(t => t.disc === discId);
+  const lastPhase = discTasks.length ? discTasks[discTasks.length-1].phase : 'PHASE 1';
+  const id = nextId++;
+  tasks.push({ id, disc: discId, type: 'task', phase: lastPhase,
+    no: discId.toUpperCase() + '-' + id,
+    name: 'New Task â click to edit', sub: 'Input: click to edit',
+    pm: 'PM Lead', sc: 'â', wStart: 1, wEnd: 2,
+    status: 'Not Started', color: disc.color });
+  render();
+  setTimeout(() => {
+    const el = document.querySelector('[data-id="' + id + '"] .task-name');
+    if (el) { el.focus(); document.execCommand('selectAll', false, null); }
+  }, 50);
+}
+
+function addMilestoneToDisc(discId) {
+  const disc = DISC_MAP[discId];
+  const discTasks = tasks.filter(t => t.disc === discId);
+  const lastPhase = discTasks.length ? discTasks[discTasks.length-1].phase : 'PHASE 1';
+  const id = nextId++;
+  tasks.push({ id, disc: discId, type: 'milestone', phase: lastPhase,
+    no: 'MS-' + id,
+    name: 'Milestone â click to edit', sub: 'Description â click to edit',
+    pm: '', sc: '', wStart: 1, wEnd: 1, status: 'Not Started', color: '#d97706',
+    markers: [{ week: 1, label: 'MS-' + id }] });
+  render();
+  setTimeout(() => {
+    const el = document.querySelector('[data-id="' + id + '"] .task-name');
+    if (el) { el.focus(); document.execCommand('selectAll', false, null); }
+  }, 50);
+}
+
+function addMilestoneMarker(taskId) {
+  const task = tasks.find(t => t.id === taskId);
+  if (!task || task.type !== 'milestone') return;
+  if (!task.markers) task.markers = [];
+  const usedWeeks = task.markers.map(m => m.week);
+  let nw = 1; while (usedWeeks.includes(nw) && nw <= numWeeks) nw++;
+  task.markers.push({ week: nw, label: task.no });
+  const tlEl = document.getElementById('tl-' + taskId);
+  if (tlEl) tlEl.innerHTML = buildMilestoneTimeline(task) + buildAddMarkerBtn(taskId);
+}
+
+function addGlobalTask() {
+  const discId = activeFilter !== 'all' ? activeFilter : 'pm';
+  addTaskToDisc(discId);
+}
+
+function toggleDisc(discId) {
+  collapsed[discId] = !collapsed[discId];
+  render();
+}
+
+function cycleColor(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  const idx = COLORS.indexOf(task.color);
+  task.color = COLORS[(idx + 1) % COLORS.length];
+  const dot = document.querySelector(`[data-id="${id}"] .task-color-dot`);
+  const bar = document.getElementById(`bar-${id}`);
+  if (dot) dot.style.background = task.color;
+  if (bar) bar.style.background = task.color;
+}
+
+function cycleStatus(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  const idx = STATUSES.indexOf(task.status);
+  task.status = STATUSES[(idx + 1) % STATUSES.length];
+  const badge = document.querySelector(`[data-id="${id}"] .status-badge`);
+  if (badge) {
+    const ss = STATUS_STYLE[task.status];
+    badge.style.background = ss.bg;
+    badge.style.color = ss.color;
+    badge.textContent = task.status;
+  }
+}
+
+function saveField(id, field, value) {
+  const task = tasks.find(t => t.id === id);
+  if (task) task[field] = value.trim() || task[field];
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  WEEK COLUMNS
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function addWeekColumn() {
+  numWeeks++;
+  render();
+  // Scroll to reveal new column
+  const outer = document.querySelector('.gantt-outer');
+  if (outer) outer.scrollLeft = outer.scrollWidth;
+}
+
+function onStartDateChange(val) {
+  weekStartDate = val ? new Date(val) : null;
+  render();
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+//  PDF / PRINT
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+function savePDF() {
+  window.print();
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+
+// ââââââââââââââââââââââââââââââââââââââââ
+//  ROW DRAG-TO-REORDER (syncs tasks[] so Save preserves row order)
+// ââââââââââââââââââââââââââââââââââââââââ
+(function(){
+  let dragSrcRow = null, ghost = null;
+  function getTaskRows() {
+    return Array.from(document.querySelectorAll('.g-row[data-id]'))
+      .filter(r => r.getAttribute('data-id') && r.getAttribute('data-id') !== 'null');
+  }
+  function clearDragStates() {
+    getTaskRows().forEach(r => r.classList.remove('row-drag-over-top','row-drag-over-bottom','row-dragging'));
+  }
+  function createGhost(row) {
+    const g = document.createElement('div');
+    g.className = 'row-drag-ghost';
+    const noEl = row.querySelector('.task-no-text');
+    const infoEl = row.querySelector('.task-info');
+    const no = noEl ? noEl.textContent.trim() : '';
+    let name = '';
+    if (infoEl) {
+      const lines = infoEl.textContent.trim().split('\n').map(s=>s.trim()).filter(Boolean);
+      name = lines[0] || '';
+    }
+    g.textContent = (no ? no + ': ' : '') + name.substring(0, 50);
+    document.body.appendChild(g);
+    return g;
+  }
+  function syncTasksToDOM() {
+    const rows = getTaskRows();
+    const orderedIds = rows.map(r => parseInt(r.getAttribute('data-id'), 10)).filter(n => !isNaN(n));
+    const taskMap = {};
+    tasks.forEach(t => { taskMap[t.id] = t; });
+    const reordered = orderedIds.map(id => taskMap[id]).filter(Boolean);
+    const inDom = new Set(orderedIds);
+    tasks.forEach(t => { if (!inDom.has(t.id)) reordered.push(t); });
+    tasks.length = 0;
+    reordered.forEach(t => tasks.push(t));
+    // Update milestone phase to match nearest preceding non-milestone task
+    let currentPhase = null;
+    for (const t of tasks) {
+      if (t.type !== 'milestone') { currentPhase = t.phase; }
+      else if (currentPhase) { t.phase = currentPhase; }
+    }
+  }
+  function onMove(e) {
+    if (!dragSrcRow) return;
+    if (ghost) { ghost.style.left=(e.clientX+12)+'px'; ghost.style.top=(e.clientY-10)+'px'; }
+    clearDragStates();
+    dragSrcRow.classList.add('row-dragging');
+    for (const row of getTaskRows()) {
+      if (row === dragSrcRow) continue;
+      const rect = row.getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        row.classList.add(e.clientY < rect.top + rect.height/2 ? 'row-drag-over-top' : 'row-drag-over-bottom');
+        break;
+      }
+    }
+  }
+  function onUp(e) {
+    if (!dragSrcRow) return;
+    document.body.classList.remove('is-dragging');
+    let targetRow = null, before = true;
+    for (const row of getTaskRows()) {
+      if (row === dragSrcRow) continue;
+      const rect = row.getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        targetRow = row; before = e.clientY < rect.top + rect.height/2; break;
+      }
+    }
+    clearDragStates();
+    if (ghost) { ghost.remove(); ghost = null; }
+    if (targetRow && targetRow !== dragSrcRow) {
+      dragSrcRow.parentNode.insertBefore(dragSrcRow, before ? targetRow : targetRow.nextSibling);
+      syncTasksToDOM();
+    }
+    dragSrcRow = null;
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+  }
+  window.startRowDrag = function(e) {
+    e.preventDefault(); e.stopPropagation();
+    dragSrcRow = e.currentTarget.closest('.g-row');
+    if (!dragSrcRow) return;
+    document.body.classList.add('is-dragging');
+    ghost = createGhost(dragSrcRow);
+    ghost.style.left=(e.clientX+12)+'px'; ghost.style.top=(e.clientY-10)+'px';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  };
+})();
+
+//  SAVE / LOAD (localStorage)
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+const LS_KEY = 'sw11_tracker_v1';
+
+function saveState() {
+  try {
+    const state = {
+      tasks: tasks,
+      numWeeks: numWeeks,
+      weekStartDate: weekStartDate ? weekStartDate.toISOString() : null,
+      nextId: nextId
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    const btn = document.getElementById('saveBtn');
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '&#10003; Saved!';
+      btn.classList.add('saved');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('saved'); }, 1800);
+    }
+  } catch(e) { alert('Save failed: ' + e.message); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return false;
+    const state = JSON.parse(raw);
+    if (state.tasks && Array.isArray(state.tasks)) {
+      tasks = state.tasks;
+      numWeeks = state.numWeeks || 16;
+      weekStartDate = state.weekStartDate ? new Date(state.weekStartDate) : null;
+      nextId = state.nextId || 200;
+      if (weekStartDate) {
+        const inp = document.getElementById('startDateInput');
+        if (inp) inp.value = weekStartDate.toISOString().substring(0,10);
+      }
+      return true;
+    }
+  } catch(e) { console.warn('loadState failed:', e); }
+  return false;
+}
+
+//  INIT
+// âââââââââââââââââââââââââââââââââââââââââââââââ
+loadState();
+render();
+</script>
+</body>
+</html>
