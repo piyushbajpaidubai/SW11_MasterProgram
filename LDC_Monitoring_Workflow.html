@@ -165,6 +165,86 @@
       letter-spacing: 0.3px;
     }
 
+    /* — DISC HEADER EDIT/DELETE — */
+    .disc-banner { position: relative; }
+    .disc-label-text {
+      display: inline;
+        cursor: text;
+          outline: none;
+            border-bottom: 1px solid transparent;
+              padding: 0 2px;
+                transition: border-color 0.15s;
+                  font: inherit;
+                    color: inherit;
+                      letter-spacing: inherit;
+                        text-transform: inherit;
+                        }
+                        .disc-label-text:focus,
+                        .disc-label-text:hover {
+                          border-bottom-color: rgba(255,255,255,0.5);
+                            background: rgba(255,255,255,0.08);
+                              border-radius: 2px;
+                              }
+                              .hdr-del-btn {
+                                position: absolute;
+                                  right: 120px;
+                                    top: 50%;
+                                      transform: translateY(-50%);
+                                        background: transparent;
+                                          border: 1px solid transparent;
+                                            color: transparent;
+                                              cursor: pointer;
+                                                font-size: 12px;
+                                                  padding: 2px 7px;
+                                                    border-radius: 3px;
+                                                      transition: all 0.2s;
+                                                        line-height: 1;
+                                                          z-index: 10;
+                                                          }
+                                                          .disc-banner:hover .hdr-del-btn {
+                                                            background: rgba(200,50,50,0.7);
+                                                              border-color: rgba(255,80,80,0.5);
+                                                                color: rgba(255,255,255,0.9);
+                                                                }
+                                                                .hdr-del-btn:hover {
+                                                                  background: rgba(220,30,30,0.95) !important;
+                                                                    border-color: #ff6666 !important;
+                                                                      color: #fff !important;
+                                                                      }
+                                                                      /* — ADD SECTION BUTTON — */
+                                                                      .add-section-row {
+                                                                        display: flex;
+                                                                          align-items: center;
+                                                                            justify-content: center;
+                                                                              padding: 6px 0;
+                                                                                min-height: 36px;
+                                                                                }
+                                                                                .add-section-btn {
+                                                                                  background: transparent;
+                                                                                    border: 1px dashed rgba(255,255,255,0.25);
+                                                                                      color: rgba(255,255,255,0.45);
+                                                                                        cursor: pointer;
+                                                                                          font-size: 13px;
+                                                                                            padding: 5px 20px;
+                                                                                              border-radius: 4px;
+                                                                                                transition: all 0.2s;
+                                                                                                  display: flex;
+                                                                                                    align-items: center;
+                                                                                                      gap: 6px;
+                                                                                                        letter-spacing: 0.05em;
+                                                                                                          font-family: inherit;
+                                                                                                          }
+                                                                                                          .add-section-btn:hover {
+                                                                                                            border-color: rgba(255,255,255,0.5);
+                                                                                                              color: rgba(255,255,255,0.85);
+                                                                                                                background: rgba(255,255,255,0.06);
+                                                                                                                }
+                                                                                                                .add-section-btn .plus-icon {
+                                                                                                                  font-size: 16px;
+                                                                                                                    font-weight: 300;
+                                                                                                                      line-height: 1;
+                                                                                                                      }
+
     /* ── PHASE LABEL ── */
     .phase-label {
       font-size: 9px;
@@ -1403,21 +1483,80 @@ function buildTaskRow(task) {
 
 function buildDiscHeader(disc, taskCount) {
   const isCollapsed = collapsed[disc.id];
-  return `
-  <div class="g-row disc-hdr" data-disc="${disc.id}">
-    <div class="disc-banner${isCollapsed?' collapsed':''}" style="background:${disc.color}"
-      onclick="toggleDisc('${disc.id}')">
-      <span class="disc-arrow">▼</span>
-      ${escHtml(disc.label)}
-      <span class="disc-count">${taskCount} tasks</span>
-    </div>
-  </div>`;
-}
+    return `
+      <div class="g-row disc-hdr" data-disc="${disc.id}">
+          <div class="disc-banner${isCollapsed ? ' collapsed':''}" style="background:${disc.color}"
+                onclick="toggleDisc('${disc.id}')">
+                      <span class="disc-arrow">▼</span>
+                            <span class="disc-label-text" contenteditable="true"
+                                    onclick="event.stopPropagation()"
+                                            onblur="renameDisc('${disc.id}', this.innerText)"
+                                                    onkeydown="blurOnEnter(event)">${escHtml(disc.label)}</span>
+                                                          <span class="disc-count">${taskCount} tasks</span>
+                                                                <button class="hdr-del-btn" onclick="event.stopPropagation();deleteDisc('${disc.id}')" title="Delete section">✕</button>
+                                                                    </div>
+                                                                      </div>`;
+                                                                      }
 
-function buildPhaseHeader(label) {
-  return `<div class="g-row phase-hdr"><span class="phase-label">▸ ${escHtml(label)}</span></div>`;
-}
+                                                                      function buildPhaseHeader(label, discId) {
+                                                                          const safeLabel = escHtml(label);
+                                                                            const safeDisc = escHtml(discId);
+                                                                              return '<div class="g-row phase-hdr" data-phase-disc="' + safeDisc + '" data-phase-label="' + safeLabel + '">' +
+                                                                                  '<span class="phase-label">' +
+                                                                                        '<span class="phase-label-text" contenteditable="true" ' +
+                                                                                                'onclick="event.stopPropagation()" ' +
+                                                                                                        'onblur="renamePhase(\'' + safeDisc + '\', this.dataset.orig, this.innerText)" ' +
+                                                                                                                'onkeydown="blurOnEnter(event)" ' +
+                                                                                                                        'data-orig="' + safeLabel + '">' + safeLabel + '</span>' +
+                                                                                                                              '<button class="phase-del-btn" onclick="deletePhase(\'' + safeDisc + '\', this.closest(\'[data-phase-label]\').dataset.phaseLabel)" title="Delete phase">\u2715</button>' +
+                                                                                                                                  '</span></div>';
+                                                                                                                                  }
 
+                                                                                                                                  function renameDisc(discId, newLabel) {
+                                                                                                                                    const disc = DISC_CONFIG.find(d => d.id === discId);
+                                                                                                                                      if (!disc) return;
+                                                                                                                                        const trimmed = (newLabel || '').trim();
+                                                                                                                                          if (!trimmed) return;
+                                                                                                                                            disc.label = trimmed;
+                                                                                                                                              saveState && saveState();
+                                                                                                                                              }
+
+                                                                                                                                              function deleteDisc(discId) {
+                                                                                                                                                const disc = DISC_CONFIG.find(d => d.id === discId);
+                                                                                                                                                  if (!disc) return;
+                                                                                                                                                    const taskCount = tasks.filter(t => t.disc === discId).length;
+                                                                                                                                                      let msg = 'Remove section "' + disc.label + '"?';
+                                                                                                                                                        if (taskCount > 0) msg += '\nThis will also delete its ' + taskCount + ' task(s).';
+                                                                                                                                                          if (!confirm(msg)) return;
+                                                                                                                                                            for (let i = tasks.length - 1; i >= 0; i--) {
+                                                                                                                                                                if (tasks[i].disc === discId) tasks.splice(i, 1);
+                                                                                                                                                                  }
+                                                                                                                                                                    const idx = DISC_CONFIG.findIndex(d => d.id === discId);
+                                                                                                                                                                      if (idx > -1) DISC_CONFIG.splice(idx, 1);
+                                                                                                                                                                        if (activeFilter === discId) activeFilter = 'all';
+                                                                                                                                                                          render();
+                                                                                                                                                                            saveState && saveState();
+                                                                                                                                                                            }
+
+                                                                                                                                                                            function addNewSection() {
+                                                                                                                                                                              const name = prompt('Enter new section name:');
+                                                                                                                                                                                if (!name || !name.trim()) return;
+                                                                                                                                                                                  const label = name.trim().toUpperCase();
+                                                                                                                                                                                    const short = label.split(/[\s&,\/]+/).slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                                                                                                                                                                                      let baseId = label.replace(/[^A-Z0-9]/g, '').substring(0, 8).toLowerCase() || 'sec';
+                                                                                                                                                                                        let id = baseId;
+                                                                                                                                                                                          let n = 1;
+                                                                                                                                                                                            while (DISC_CONFIG.find(d => d.id === id)) { id = baseId + n++; }
+                                                                                                                                                                                              const colors = ['#3a3a3a','#424242','#484848','#505050','#555555','#4b4b4b','#454545','#3d3d3d'];
+                                                                                                                                                                                                const color = colors[Math.floor(Math.random() * colors.length)];
+                                                                                                                                                                                                  DISC_CONFIG.push({ id, label, short, color });
+                                                                                                                                                                                                    render();
+                                                                                                                                                                                                      saveState && saveState();
+                                                                                                                                                                                                        setTimeout(function() {
+                                                                                                                                                                                                            const el = document.querySelector('[data-disc="' + id + '"]');
+                                                                                                                                                                                                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                                                                                                                                                                  }, 100);
+                                                                                                                                                                                                                  }
 function buildAddRowBtn(discId) {
   return '<div class="g-row" style="min-height:0;display:flex;">' +
     '<button class="add-row-btn" style="flex:1;" onclick="addTaskToDisc(\'' + discId + '\')">' +
@@ -1453,6 +1592,9 @@ function render() {
       html += buildAddRowBtn(disc.id);
     }
   });
+
+    // Add Section button
+      html += '<div class="g-row add-section-row"><button class="add-section-btn" onclick="addNewSection()" title="Add new section"><span class="plus-icon">\uFF0B</span> ADD SECTION</button></div>';
 
   // Milestone footer
   html += `
