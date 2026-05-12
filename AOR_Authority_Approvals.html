@@ -1,3 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SW11 | AOR Authority Approvals &amp; Building Permit</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f6f9;
+  color: #2d3748;
+  padding: 20px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+.header h1 { font-size: 18px; font-weight: 700; color: #0f1e35; letter-spacing: 0.5px; }
+.header-logos-left { display: flex; align-items: center; gap: 10px; }
+.header-logo { height: 44px; width: auto; object-fit: contain; }
+.header-logo-emaar { height: 36px; width: auto; object-fit: contain; }
+.header-title { text-align: center; flex: 1; }
+
+/* ── INFO BANNER ── */
+.info-banner {
+  background: linear-gradient(135deg, #1a365d, #2b6cb0);
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.info-banner .ib-icon { font-size: 20px; }
+.info-banner .ib-body { flex: 1; }
+.info-banner .ib-title { font-size: 12.5px; font-weight: 700; color: #fff; }
+.info-banner .ib-sub { font-size: 10px; color: #bee3f8; margin-top: 2px; }
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.filter-tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.filter-tab {
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.filter-tab:hover { border-color: #3182ce; color: #3182ce; }
+.filter-tab.active { background: #1a365d; color: #fff; border-color: #1a365d; }
+
+.ctrl-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ctrl-label { font-size: 10px; color: #718096; font-weight: 600; white-space: nowrap; }
+.ctrl-input {
+  font-size: 11px; padding: 5px 8px;
+  border: 1.5px solid #e2e8f0; border-radius: 6px;
+  color: #2d3748; background: #fff; cursor: pointer;
+}
+.ctrl-input:focus { outline: none; border-color: #3182ce; }
+
+.btn {
+  padding: 6px 13px;
+  border-radius: 6px;
+  border: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-success { background: #38a169; color: #fff; }
+.btn-success:hover { background: #276749; }
+.btn-blue { background: #3182ce; color: #fff; }
+.btn-blue:hover { background: #2c5282; }
+.btn-pdf { background: #e53e3e; color: #fff; }
+.btn-pdf:hover { background: #c53030; }
+.btn-save { background: #38a169; color: #fff; }
+.btn-save:hover { background: #276749; }
+.btn-save.saved { background: #276749; }
+
+/* ── GANTT OUTER (scrollable) ── */
+.gantt-outer {
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  position: relative;
+}
+.gantt-header-outer {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+}
+.gantt-header-outer .gantt-wrap-hdr {
+  background: #1a202c;
+  min-width: fit-content;
+}
+.gantt-scroll {
+  overflow-x: auto;
+}
+.gantt-wrap {
+  background: white;
+  border-radius: 0 0 10px 10px;
+  min-width: fit-content;
+}
+
+/* ── ROWS ── */
+.g-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #f0f4f8;
+  min-height: 42px;
+  position: relative;
+}
+.g-row:hover .del-btn { opacity: 1; }
+.g-row.hdr { background: #1a202c; min-height: 0; }
+.g-row.disc-hdr { min-height: 0; }
+.g-row.phase-hdr { min-height: 0; background: #f7fafc; border-top: 1px solid #e2e8f0; }
+.g-row.hidden { display: none; }
+
+/* ── DISCIPLINE BANNER ── */
+.disc-banner {
+  width: 100%;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+}
+.disc-banner .disc-arrow { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.disc-banner.collapsed .disc-arrow { transform: rotate(-90deg); }
+.disc-banner .disc-count {
+  margin-left: auto;
+  background: rgba(0,0,0,0.25);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+}
+
+/* ── PHASE LABEL ── */
+.phase-drag-handle {
+  display: flex; align-items: center; justify-content: center;
+  width: 18px; flex-shrink: 0;
+  cursor: grab; color: #b0b8c4; font-size: 11px;
+  opacity: 0; transition: opacity 0.15s; user-select: none;
+  padding: 0 2px;
+}
+.phase-drag-handle:active { cursor: grabbing; }
+.g-row.phase-hdr:hover .phase-drag-handle { opacity: 1; }
+.phase-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #718096;
+  padding: 4px 8px 4px 4px;
+  flex: 1;
+  outline: none;
+  border-radius: 3px;
+  cursor: text;
+  white-space: normal;
+}
+.phase-label:hover { background: #edf2f7; color: #4a5568; }
+.phase-label:focus { background: #ebf8ff; color: #2b6cb0; padding: 3px 7px 3px 3px; box-shadow: 0 0 0 2px #bee3f8; }
+.phase-del-btn {
+  opacity: 0; background: none; border: none; cursor: pointer;
+  color: #cbd5e0; font-size: 11px; line-height: 1;
+  padding: 0 8px; flex-shrink: 0; align-self: center;
+  transition: color 0.12s, opacity 0.12s;
+}
+.phase-del-btn:hover { color: #e53e3e; }
+.g-row.phase-hdr:hover .phase-del-btn { opacity: 1; }
+
+/* ── FIXED COLUMNS ── */
+.c-no {
+  width: 54px; flex-shrink: 0;
+  padding: 6px 4px 6px 10px;
+  border-right: 1px solid #e8ecf0;
+  display: flex; align-items: center;
+}
+.c-no.hdr-cell {
+  border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0; padding: 9px 4px 9px 10px;
+}
+.c-task {
+  width: 240px; flex-shrink: 0;
+  padding: 6px 8px;
+  border-right: 1px solid #e8ecf0;
+  display: flex; align-items: center; gap: 6px;
+}
+.c-task.hdr-cell {
+  border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+}
+.c-pm {
+  width: 108px; flex-shrink: 0;
+  padding: 6px 6px;
+  border-right: 1px solid #e8ecf0;
+  display: flex; align-items: center; justify-content: center;
+}
+.c-pm.hdr-cell {
+  border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+}
+.c-sc {
+  width: 98px; flex-shrink: 0;
+  padding: 6px 6px;
+  border-right: 1px solid #e8ecf0;
+  display: flex; align-items: center; justify-content: center;
+}
+.c-sc.hdr-cell {
+  border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+}
+.c-status {
+  width: 88px; flex-shrink: 0;
+  padding: 6px 4px;
+  border-right: 1px solid #e8ecf0;
+  display: flex; align-items: center; justify-content: center;
+}
+.c-status.hdr-cell {
+  border-right-color: #2d3748; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; color: #e2e8f0;
+}
+.c-timeline { flex: 1; position: relative; min-width: 720px; }
+
+/* ── WEEK HEADERS ── */
+.week-hdrs { display: flex; }
+.week-hdr {
+  flex: 1;
+  text-align: center;
+  padding: 7px 2px 5px;
+  border-right: 1px solid #2d3748;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #e2e8f0;
+  min-width: 48px;
+  position: relative;
+}
+.week-hdr:last-child { border-right: none; }
+.week-hdr .wn { display: block; }
+.week-hdr .wd { display: block; font-size: 8px; font-weight: 400; color: #90a8c3; margin-top: 1px; }
+.week-hdr.add-col {
+  flex: none;
+  width: 34px;
+  cursor: pointer;
+  color: #38a169;
+  border-left: 2px dashed #2d4a3a;
+  font-size: 18px;
+  font-weight: 300;
+  padding: 4px 2px;
+}
+.week-hdr.add-col:hover { background: #1a2e1a; }
+
+/* ── TASK INFO ── */
+.task-no-text {
+  font-size: 9px; font-weight: 800; color: #3182ce;
+  white-space: nowrap; outline: none; border-radius: 3px;
+  cursor: text; min-width: 28px; display: inline-block;
+}
+.task-no-text:focus {
+  background: #ebf8ff; padding: 1px 4px;
+  box-shadow: 0 0 0 2px #bee3f8;
+}
+.task-no-text:hover:not(:focus) {
+  background: #f0f7ff; border-radius: 3px;
+}
+.task-color-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  cursor: pointer; border: 1.5px solid rgba(0,0,0,0.1);
+  transition: transform 0.12s;
+}
+.task-color-dot:hover { transform: scale(1.5); }
+.task-info { flex: 1; min-width: 0; }
+.task-name, .task-sub {
+  display: block; outline: none; width: 100%;
+  white-space: normal; overflow: visible;
+  border-radius: 3px;
+}
+.task-name {
+  font-size: 11px; font-weight: 600; color: #1a202c;
+}
+.task-name:focus { background: #ebf8ff; padding: 1px 4px; white-space: normal; overflow: visible; }
+.task-sub {
+  font-size: 9px; color: #a0aec0; margin-top: 0px;
+}
+.task-sub:focus { background: #f7fafc; padding: 1px 4px; white-space: normal; overflow: visible; }
+
+.pm-text, .sc-text {
+  font-size: 9px; font-weight: 600; color: #4a5568;
+  background: #edf2f7; border-radius: 20px;
+  padding: 2px 6px; text-align: center;
+  outline: none; width: 100%; display: block;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: text;
+}
+.pm-text:focus, .sc-text:focus { background: #ebf8ff; color: #2b6cb0; border-radius: 4px; }
+
+.status-badge {
+  font-size: 8.5px; font-weight: 700;
+  border-radius: 10px;
+  padding: 3px 7px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-block;
+  transition: all 0.12s;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.status-badge:hover { opacity: 0.75; transform: scale(1.05); }
+
+.del-btn {
+  opacity: 0; background: none; border: none; cursor: pointer;
+  color: #cbd5e0; font-size: 12px; line-height: 1;
+  padding: 0 2px; flex-shrink: 0;
+  transition: color 0.12s, opacity 0.12s;
+}
+.del-btn:hover { color: #e53e3e; }
+
+/* ── GRID LINES ── */
+.grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #f0f4f8; pointer-events: none; z-index: 0; }
+.grid-alt { position: absolute; top: 0; bottom: 0; background: rgba(0,0,0,0.012); pointer-events: none; z-index: 0; }
+
+/* ── BAR ── */
+.g-bar {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  height: 24px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; user-select: none; z-index: 1;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  transition: box-shadow 0.1s, height 0.1s;
+}
+.g-bar:hover { height: 27px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.g-bar:active { cursor: grabbing; }
+body.is-dragging .g-bar { transition: none; }
+body.is-dragging { cursor: grabbing !important; user-select: none; }
+body.is-dragging * { cursor: grabbing !important; }
+
+/* — ROW DRAG-TO-REORDER — */
+.row-drag-handle {
+  display: flex; align-items: center; justify-content: center;
+  width: 14px; flex-shrink: 0;
+  cursor: grab; color: #b0b8c4; font-size: 11px;
+  opacity: 0; transition: opacity 0.15s; user-select: none;
+  padding-right: 2px;
+}
+.row-drag-handle:active { cursor: grabbing; }
+.g-row:hover .row-drag-handle { opacity: 1; }
+.g-row.row-dragging { opacity: 0.4; background: #eaf2ff !important; }
+.g-row.row-drag-over-top { border-top: 2.5px solid #3b82f6 !important; }
+.g-row.row-drag-over-bottom { border-bottom: 2.5px solid #3b82f6 !important; }
+.row-drag-ghost {
+  position: fixed; z-index: 99999; pointer-events: none;
+  background: #fff; border: 1.5px solid #3b82f6; border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  padding: 6px 12px; font-size: 12px; color: #1a202c;
+  max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0.95;
+}
+
+.bar-lbl {
+  font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.92);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 0 14px; pointer-events: none; letter-spacing: 0.2px;
+}
+.bar-handle {
+  position: absolute; top: 0; bottom: 0; width: 9px;
+  cursor: ew-resize; z-index: 2; display: flex; align-items: center; justify-content: center;
+}
+.bar-handle::after { content: '\2026\2026\2026'; font-size: 9px; color: rgba(255,255,255,0.45); }
+.bar-handle.left { left: 0; border-radius: 5px 0 0 5px; }
+.bar-handle.right { right: 0; border-radius: 0 5px 5px 0; }
+
+/* ── ADD ROW ── */
+.add-row-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  color: #a0aec0; font-size: 11px; font-weight: 600;
+  padding: 7px 16px; text-align: left;
+  transition: background 0.12s, color 0.12s;
+  width: 100%;
+}
+.add-row-btn:hover { background: #f7fafc; color: #38a169; }
+.add-row-btn .plus { font-size: 14px; color: #38a169; line-height: 1; }
+
+/* ── MILESTONE ── */
+.g-row.milestone-symbol-row {
+  background: linear-gradient(90deg, #fffbeb 0%, #fefce8 100%);
+  border-bottom: 1px solid #fcd34d; min-height: 42px;
+}
+.milestone-symbol-row .c-status { overflow: visible; }
+.milestone-symbol-row .status-badge { display: none; }
+.milestone-symbol-row .c-timeline { overflow: visible !important; }
+.ms-diamond-wrap {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 12px; cursor: grab; z-index: 8;
+}
+.ms-diamond-wrap:active { cursor: grabbing; }
+.ms-diamond-wrap .ms-d {
+  width: 12px; height: 12px; background: #d97706; transform: rotate(45deg);
+  border: 1.5px solid #92400e; border-radius: 1px;
+  box-shadow: 0 1px 4px rgba(217,119,6,0.45);
+  transition: background 0.12s, transform 0.12s;
+}
+.ms-diamond-wrap:hover .ms-d { background: #b45309; transform: rotate(45deg) scale(1.15); }
+.ms-diamond-wrap.is-dragging .ms-d { background: #92400e; }
+.ms-span-bar {
+  position: absolute; height: 4px;
+  background: linear-gradient(90deg, #fcd34d, #f59e0b);
+  border-radius: 2px; top: 50%; transform: translateY(-50%);
+  z-index: 5; pointer-events: none;
+}
+.ms-label {
+  position: absolute; top: calc(50% - 18px);
+  font-size: 9px; font-weight: 700; color: #92400e;
+  white-space: nowrap; pointer-events: none; z-index: 9;
+  background: rgba(255,251,235,0.9); padding: 1px 3px; border-radius: 3px;
+}
+.add-milestone-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  color: #92400e; font-size: 11px; font-weight: 600;
+  padding: 7px 16px; text-align: left;
+  transition: background 0.12s; border-left: 1px solid #fcd34d;
+}
+.add-milestone-btn:hover { background: #fffbeb; color: #b45309; }
+
+.milestone-row {
+  background: linear-gradient(135deg, #0f1e35, #1a365d);
+  padding: 13px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.milestone-row .m-icon { font-size: 20px; }
+.milestone-row .m-title { font-size: 13px; font-weight: 700; color: #fff; }
+.milestone-row .m-sub { font-size: 10px; color: #90a8c3; margin-top: 2px; }
+.milestone-row .m-date {
+  margin-left: auto; background: rgba(255,255,255,0.1); border-radius: 6px;
+  padding: 5px 12px; font-size: 11px; font-weight: 700; color: #c9a84c;
+}
+
+/* ── LEGEND ── */
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #718096; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── TIP ── */
+.tip { font-size: 10px; color: #a0aec0; margin-top: 8px; padding-left: 2px; }
+.tip kbd { background: #e2e8f0; border-radius: 3px; padding: 1px 5px; font-size: 9.5px; color: #4a5568; }
+
+/* ── PRINT / PDF ── */
+@media print {
+  @page { size: A2 landscape; margin: 8mm; }
+  body { background: white; padding: 4mm; }
+  .controls, .tip, .btn, .del-btn, .add-row-btn,
+  .bar-handle, .week-hdr.add-col,
+  .phase-drag-handle, .phase-del-btn { display: none !important; }
+  .gantt-outer { overflow: visible; box-shadow: none; }
+  .gantt-wrap { border-radius: 0; }
+  .header, .info-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .g-row { break-inside: avoid; }
+  .g-bar { box-shadow: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logos-left">
+    <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23000%22%2F%3E%3Ctext%20x%3D%2210%22%20y%3D%2284%22%20font-family%3D%22Arial%22%20font-size%3D%2252%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3ED%3C%2Ftext%3E%3Ctext%20x%3D%2254%22%20y%3D%2246%22%20font-family%3D%22Arial%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3ET%3C%2Ftext%3E%3C%2Fsvg%3E" alt="DT Logo" class="header-logo"/>
+    <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%2072%22%3E%3Crect%20width%3D%22240%22%20height%3D%2272%22%20fill%3D%22%231b1b1b%22%2F%3E%3Ctext%20x%3D%2214%22%20y%3D%2234%22%20font-family%3D%22Arial%22%20font-size%3D%2226%22%20font-weight%3D%22800%22%20fill%3D%22%23fff%22%20letter-spacing%3D%221%22%3EZUTARI%3C%2Ftext%3E%3Ctext%20x%3D%2214%22%20y%3D%2256%22%20font-family%3D%22Arial%22%20font-size%3D%2212%22%20font-weight%3D%22400%22%20fill%3D%22%23fff%22%20letter-spacing%3D%221%22%3EIMPACT.%20ENGINEERED.%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Zutari Logo" class="header-logo"/>
+  </div>
+  <div class="header-title">
+    <h1>SW11 | AOR Authority Approvals &amp; Building Permit | Stage 3 DD</h1>
+  </div>
+  <div>
+    <img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20260%2064%22%3E%3Crect%20width%3D%22260%22%20height%3D%2264%22%20fill%3D%22%23fff%22%2F%3E%3Ctext%20x%3D%228%22%20y%3D%2252%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2246%22%20font-weight%3D%22300%22%20fill%3D%22%23000%22%3EEMAAR%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Emaar Logo" class="header-logo-emaar"/>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="filter-tabs" id="filterTabs"></div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Week 1 Start:</span>
+    <input type="date" class="ctrl-input" id="startDateInput" onchange="onStartDateChange(this.value)"/>
+  </div>
+  <button class="btn btn-blue" onclick="addWeekColumn()">&#xFF0B; Add Week</button>
+  <button class="btn btn-success" onclick="addGlobalTask()">&#xFF0B; Add Task</button>
+  <button class="btn btn-pdf" onclick="savePDF()">&#128424; Save PDF</button>
+  <button class="btn btn-save" id="saveBtn" onclick="saveState()" title="Save all changes to browser storage">&#128190; Save</button>
+</div>
+
+<!-- GANTT -->
+<div class="gantt-outer">
+  <div class="gantt-header-outer" id="gantt-header"><div class="gantt-wrap-hdr"></div></div>
+  <div class="gantt-scroll" id="gantt-scroll">
+    <div class="gantt-wrap" id="gantt"></div>
+  </div>
+</div>
+
+<div class="tip">
+  &#128161; <kbd>Click</kbd> task name / PM / SC to edit &nbsp;&middot;&nbsp;
+  <kbd>Drag</kbd> bar to move &nbsp;&middot;&nbsp;
+  <kbd>Drag edges</kbd> to resize &nbsp;&middot;&nbsp;
+  <kbd>&#9679;</kbd> dot to change colour &nbsp;&middot;&nbsp;
+  <kbd>Status badge</kbd> to cycle status &nbsp;&middot;&nbsp;
+  <kbd>&#9658; Phase header</kbd> click to rename, drag to reorder, &#x2715; to delete &nbsp;&middot;&nbsp;
+  <kbd>&#9650; Discipline header</kbd> to collapse/expand
+</div>
+
+<div class="legend" id="legend"></div>
+
+<script>
 // ═══════════════════════════════════════════════
 //  CONFIGURATION
 // ═══════════════════════════════════════════════
@@ -394,8 +946,15 @@ function buildDiscHeader(disc, taskCount) {
   </div>`;
 }
 
-function buildPhaseHeader(label) {
-  return `<div class="g-row phase-hdr"><span class="phase-label">▸ ${escHtml(label)}</span></div>`;
+function buildPhaseHeader(label, discId, taskId) {
+  return '<div class="g-row phase-hdr" data-phase-id="' + taskId + '" data-disc="' + discId + '">' +
+    '<div class="phase-drag-handle" title="Drag to reorder" onmousedown="startPhaseRowDrag(event)">&#x283F;</div>' +
+    '<span class="phase-label" contenteditable="true" ' +
+      'onblur="savePhaseLabel(event,' + "'" + discId + "'" + ')" ' +
+      'onkeydown="if(event.key===\'Enter\'){event.preventDefault();event.target.blur()}" ' +
+      'title="Click to rename phase">&#9658; ' + escHtml(label) + '</span>' +
+    '<button class="phase-del-btn" onclick="deletePhase(\'' + discId + '\',\'' + escHtml(label) + '\')" title="Delete phase header">&#x2715;</button>' +
+    '</div>';
 }
 
 function buildAddRowBtn(discId) {
@@ -424,7 +983,7 @@ function render() {
       let lastPhase = null;
       discTasks.forEach(t => {
         if (t.phase !== lastPhase) {
-          html += buildPhaseHeader(t.phase);
+          html += buildPhaseHeader(t.phase, disc.id, t.id);
           lastPhase = t.phase;
         }
         html += buildTaskRow(t);
@@ -584,6 +1143,190 @@ function deleteTask(id) {
   saveState();
   render();
 }
+// ═══════════════════════════════════════════════
+// PHASE ACTIONS (rename, delete, drag-reorder)
+// ═══════════════════════════════════════════════
+function savePhaseLabel(event, discId) {
+  const el = event.target;
+  const rowEl = el.closest('.phase-hdr');
+  const taskId = rowEl ? parseInt(rowEl.getAttribute('data-phase-id'), 10) : null;
+  const newLabel = el.innerText.trim();
+  if (!newLabel) return;
+  // Update the phase label for all tasks sharing this phase in this disc
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const oldPhase = task.phase;
+  tasks.forEach(t => {
+    if (t.disc === discId && t.phase === oldPhase) t.phase = newLabel;
+  });
+  saveState();
+}
+
+function deletePhase(discId, phaseLabel) {
+  if (!confirm('Delete phase header "' + phaseLabel + '"? Tasks in this phase will be reassigned to the previous phase (or stay ungrouped).')) return;
+  // Get the previous phase for tasks in this phase
+  const discTasks = tasks.filter(t => t.disc === discId);
+  let prevPhase = null;
+  for (let i = 0; i < discTasks.length; i++) {
+    if (discTasks[i].phase === phaseLabel) break;
+    prevPhase = discTasks[i].phase;
+  }
+  // Reassign all tasks in this phase to the previous phase (or mark as no phase)
+  tasks.forEach(t => {
+    if (t.disc === discId && t.phase === phaseLabel) {
+      t.phase = prevPhase || phaseLabel; // keep label if no previous phase
+    }
+  });
+  // If no previous phase, we just leave tasks with their current phase but remove the visual separator
+  // by merging into a different unique value
+  if (!prevPhase) {
+    // All tasks that had this phase are now the "first" phase - set to empty or generic
+    const firstOtherPhase = tasks.find(t => t.disc === discId && t.phase !== phaseLabel);
+    if (firstOtherPhase) {
+      tasks.forEach(t => {
+        if (t.disc === discId && t.phase === phaseLabel) t.phase = firstOtherPhase.phase;
+      });
+    }
+  }
+  saveState();
+  render();
+}
+
+// -- PHASE ROW DRAG-TO-REORDER --
+(function(){
+  let phaseDragSrc = null, phaseDragLabel = null, phaseDragDisc = null, phaseGhost = null;
+  
+  function getPhaseAndTaskRows(discId) {
+    return Array.from(document.querySelectorAll('.g-row[data-disc="' + discId + '"], .g-row[data-id]')).filter(r => {
+      // Only phase-hdr rows and task rows for this disc
+      const id = r.getAttribute('data-id');
+      if (r.classList.contains('phase-hdr') && r.getAttribute('data-disc') === discId) return true;
+      if (id) {
+        const task = tasks.find(t => t.id === parseInt(id,10));
+        return task && task.disc === discId;
+      }
+      return false;
+    });
+  }
+  
+  function clearPhaseDragStates() {
+    document.querySelectorAll('.phase-hdr').forEach(r => r.classList.remove('row-drag-over-top','row-drag-over-bottom','row-dragging'));
+  }
+  
+  function onPhaseMove(e) {
+    if (!phaseDragSrc) return;
+    if (phaseGhost) { phaseGhost.style.left=(e.clientX+12)+'px'; phaseGhost.style.top=(e.clientY-10)+'px'; }
+    clearPhaseDragStates();
+    phaseDragSrc.classList.add('row-dragging');
+    const phaseRows = Array.from(document.querySelectorAll('.phase-hdr'));
+    for (const row of phaseRows) {
+      if (row === phaseDragSrc) continue;
+      const rect = row.getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        row.classList.add(e.clientY < rect.top + rect.height/2 ? 'row-drag-over-top' : 'row-drag-over-bottom');
+        break;
+      }
+    }
+  }
+  
+  function onPhaseUp(e) {
+    if (!phaseDragSrc) return;
+    document.body.classList.remove('is-dragging');
+    
+    let targetRow = null, insertBefore = true;
+    const phaseRows = Array.from(document.querySelectorAll('.phase-hdr'));
+    for (const row of phaseRows) {
+      if (row === phaseDragSrc) continue;
+      const rect = row.getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        targetRow = row;
+        insertBefore = e.clientY < rect.top + rect.height/2;
+        break;
+      }
+    }
+    
+    clearPhaseDragStates();
+    if (phaseGhost) { phaseGhost.remove(); phaseGhost = null; }
+    
+    if (targetRow && targetRow !== phaseDragSrc) {
+      const targetPhaseLabel = targetRow.querySelector('.phase-label') ? 
+        targetRow.querySelector('.phase-label').innerText.replace(/^[▸►▶\s]+/, '').trim() : '';
+      
+      // Reorder tasks so that all tasks in phaseDragLabel come before/after tasks in targetPhaseLabel
+      const disc = phaseDragDisc;
+      const srcLabel = phaseDragLabel;
+      const dstLabel = targetPhaseLabel;
+      
+      // Get the phases in current order
+      const seenPhases = [];
+      tasks.filter(t => t.disc === disc).forEach(t => {
+        if (!seenPhases.includes(t.phase)) seenPhases.push(t.phase);
+      });
+      
+      const srcIdx = seenPhases.indexOf(srcLabel);
+      const dstIdx = seenPhases.indexOf(dstLabel);
+      
+      if (srcIdx >= 0 && dstIdx >= 0 && srcIdx !== dstIdx) {
+        // Reorder phases
+        seenPhases.splice(srcIdx, 1);
+        const newDstIdx = seenPhases.indexOf(dstLabel);
+        seenPhases.splice(insertBefore ? newDstIdx : newDstIdx + 1, 0, srcLabel);
+        
+        // Rebuild tasks array in new phase order
+        const phaseOrder = {};
+        seenPhases.forEach((p, i) => { phaseOrder[p] = i; });
+        
+        const discTasks = tasks.filter(t => t.disc === disc);
+        const otherTasks = tasks.filter(t => t.disc !== disc);
+        discTasks.sort((a, b) => {
+          const pa = phaseOrder[a.phase] !== undefined ? phaseOrder[a.phase] : 999;
+          const pb = phaseOrder[b.phase] !== undefined ? phaseOrder[b.phase] : 999;
+          if (pa !== pb) return pa - pb;
+          return tasks.indexOf(a) - tasks.indexOf(b);
+        });
+        
+        // Rebuild tasks in correct order: other disc tasks + reordered disc tasks
+        tasks.length = 0;
+        const allIds = new Set();
+        discTasks.forEach(t => { allIds.add(t.id); tasks.push(t); });
+        otherTasks.forEach(t => { if (!allIds.has(t.id)) tasks.push(t); });
+      }
+      
+      saveState();
+      render();
+    }
+    
+    phaseDragSrc = null;
+    phaseDragLabel = null;
+    phaseDragDisc = null;
+    document.removeEventListener('mousemove', onPhaseMove);
+    document.removeEventListener('mouseup', onPhaseUp);
+  }
+  
+  window.startPhaseRowDrag = function(e) {
+    e.preventDefault(); e.stopPropagation();
+    const row = e.currentTarget.closest('.phase-hdr');
+    if (!row) return;
+    phaseDragSrc = row;
+    phaseDragDisc = row.getAttribute('data-disc');
+    const labelEl = row.querySelector('.phase-label');
+    phaseDragLabel = labelEl ? labelEl.innerText.replace(/^[▸►▶\s]+/, '').trim() : '';
+    document.body.classList.add('is-dragging');
+    // Create ghost
+    phaseGhost = document.createElement('div');
+    phaseGhost.className = 'row-drag-ghost';
+    phaseGhost.style.background = '#f7fafc';
+    phaseGhost.style.borderColor = '#718096';
+    phaseGhost.textContent = '▸ ' + phaseDragLabel.substring(0, 50);
+    phaseGhost.style.left=(e.clientX+12)+'px';
+    phaseGhost.style.top=(e.clientY-10)+'px';
+    document.body.appendChild(phaseGhost);
+    document.addEventListener('mousemove', onPhaseMove);
+    document.addEventListener('mouseup', onPhaseUp);
+  };
+})();
+
+
 
 function addTaskToDisc(discId) {
   const disc = DISC_MAP[discId];
